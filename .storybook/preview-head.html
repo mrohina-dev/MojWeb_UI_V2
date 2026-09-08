@@ -1,0 +1,20 @@
+<!-- .storybook/preview-head.html -->
+<style>
+  /* اصلاح جهت تمام بلوک‌های نمایش کد، پیش‌نمایش کد و syntax highlighter در استوری‌بوک */
+  pre,
+  code,
+  .docblock-source,
+  .docblock-source pre,
+  .docblock-source code,
+  .prismjs,
+  .prismjs pre,
+  .prismjs code,
+  [class*="prism-"],
+  [class*="language-"],
+  .os-content pre {
+    direction: ltr !important;
+    text-align: left !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+    unicode-bidi: isolate !important;
+  }
+</style>
