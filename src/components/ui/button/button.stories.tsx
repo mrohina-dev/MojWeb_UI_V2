@@ -18,16 +18,20 @@ const meta: Meta<typeof Button> = {
     variant: {
       control: "select",
       options: [
-        "default",
+        "primary",
         "secondary",
-        "outline",
         "ghost",
         "destructive",
         "success",
         "warning",
         "link",
       ],
-      description: "حالت‌های نمایشی و تم رنگی دکمه",
+      description: "تم رنگی دکمه (حالت خطی با پراپ outline جدا می‌شود)",
+    },
+    outline: {
+      control: "boolean",
+      description:
+        "نمایش به‌صورت خطی (بدون بک‌گراند توپر)؛ بوردر و رنگ متن از variant گرفته می‌شود",
     },
     size: {
       control: "select",
@@ -60,10 +64,10 @@ const meta: Meta<typeof Button> = {
 export default meta;
 type Story = StoryObj<typeof Button>;
 
-// ۱. حالت پیش‌فرض (Primary)
+// ۱. حالت اصلی (Primary)
 export const Primary: Story = {
   args: {
-    variant: "default",
+    variant: "primary",
     children: "دکمه اصلی",
   },
 };
@@ -76,10 +80,11 @@ export const Secondary: Story = {
   },
 };
 
-// ۳. حالت خطی (Outline)
+// ۳. حالت خطی اصلی (Primary Outline)
 export const Outline: Story = {
   args: {
-    variant: "outline",
+    variant: "primary",
+    outline: true,
     children: "دکمه خطی",
   },
 };
@@ -101,7 +106,17 @@ export const Destructive: Story = {
   },
 };
 
-// ۶. تست وضعیت بارگذاری (Loading)
+// ۶. حالت خطرناک به‌صورت خطی (Destructive Outline)
+export const DestructiveOutline: Story = {
+  args: {
+    variant: "destructive",
+    outline: true,
+    children: "حذف آیتم",
+    iconStart: <Trash2 className="size-4" />,
+  },
+};
+
+// ۷. تست وضعیت بارگذاری (Loading)
 export const Loading: Story = {
   args: {
     loading: true,
@@ -109,35 +124,36 @@ export const Loading: Story = {
   },
 };
 
-// ۷. دکمه همراه با آیکون در سمت شروع (Icon Start - Right in RTL)
+// ۸. دکمه همراه با آیکون در سمت شروع (Icon Start - Right in RTL)
 export const WithIconStart: Story = {
   args: {
-    variant: "default",
+    variant: "primary",
     children: "ایجاد رکورد جدید",
     iconStart: <Plus className="size-4" />,
   },
 };
 
-// ۸. دکمه همراه با آیکون در سمت پایان (Icon End - Left in RTL)
+// ۹. دکمه همراه با آیکون در سمت پایان (Icon End - Left in RTL)
 export const WithIconEnd: Story = {
   args: {
-    variant: "default",
+    variant: "primary",
     children: "ارسال پیام",
     iconEnd: <Send className="size-4" />,
   },
 };
 
-// ۹. دکمه فقط آیکون (Icon only)
+// ۱۰. دکمه فقط آیکون (Icon only)
 export const IconOnly: Story = {
   args: {
-    variant: "outline",
+    variant: "primary",
+    outline: true,
     size: "icon",
     children: <Mail className="size-4" />,
     "aria-label": "ارسال ایمیل",
   },
 };
 
-// ۱۰. دکمه با تمام عرض (Full Width)
+// ۱۱. دکمه با تمام عرض (Full Width)
 export const FullWidth: Story = {
   parameters: {
     layout: "padded",
@@ -147,17 +163,17 @@ export const FullWidth: Story = {
       <p className="text-xs text-muted-foreground text-center mb-2">
         نمونه دکمه تمام‌عرض در انتهای فرم یا مودال:
       </p>
-      <Button {...args} fullWidth variant="default">
+      <Button {...args} fullWidth variant="primary">
         تایید و ادامه خرید
       </Button>
-      <Button {...args} fullWidth variant="outline">
+      <Button {...args} fullWidth variant="primary" outline>
         انصراف
       </Button>
     </div>
   ),
 };
 
-// ۱۱. نمونه تعاملی شبیه‌سازی لودینگ با کلیک (Interactive Loading)
+// ۱۲. نمونه تعاملی شبیه‌سازی لودینگ با کلیک (Interactive Loading)
 export const InteractiveLoading: Story = {
   render: () => {
     const InteractiveDemo = () => {
@@ -186,7 +202,7 @@ export const InteractiveLoading: Story = {
   },
 };
 
-// ۱۲. مقایسه تمام سایزها
+// ۱۳. مقایسه تمام سایزها
 export const Sizes: Story = {
   render: (args) => (
     <div className="flex flex-wrap items-center gap-4">
@@ -200,19 +216,18 @@ export const Sizes: Story = {
         بزرگ (lg)
       </Button>
       <Button {...args} size="icon">
-       icon
+        <Mail className="size-4" />
       </Button>
     </div>
   ),
 };
 
-// ۱۳. ماتریس همه واریانت‌های تم NovaFlow
+// ۱۴. ماتریس همه واریانت‌های توپر (Solid)
 export const AllVariants: Story = {
   render: (args) => (
     <div className="flex flex-wrap items-center gap-3">
-      <Button {...args} variant="default">Primary</Button>
+      <Button {...args} variant="primary">Primary</Button>
       <Button {...args} variant="secondary">Secondary</Button>
-      <Button {...args} variant="outline">Outline</Button>
       <Button {...args} variant="ghost">Ghost</Button>
       <Button {...args} variant="destructive">Destructive</Button>
       <Button {...args} variant="success" iconStart={<Check className="size-4" />}>
@@ -220,6 +235,21 @@ export const AllVariants: Story = {
       </Button>
       <Button {...args} variant="warning">Warning</Button>
       <Button {...args} variant="link">Link</Button>
+    </div>
+  ),
+};
+
+// ۱۵. ماتریس همه واریانت‌های خطی (Outline)
+export const AllOutlineVariants: Story = {
+  render: (args) => (
+    <div className="flex flex-wrap items-center gap-3">
+      <Button {...args} variant="primary" outline>Primary Outline</Button>
+      <Button {...args} variant="secondary" outline>Secondary Outline</Button>
+      <Button {...args} variant="destructive" outline>Destructive Outline</Button>
+      <Button {...args} variant="success" outline iconStart={<Check className="size-4" />}>
+        Success Outline
+      </Button>
+      <Button {...args} variant="warning" outline>Warning Outline</Button>
     </div>
   ),
 };

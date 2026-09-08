@@ -5,7 +5,7 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
+        primary:
           'bg-primary text-primary-foreground shadow hover:bg-primary-500 active:bg-primary-700',
         destructive:
           'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive-600 active:bg-destructive-700',
@@ -13,14 +13,16 @@ export const buttonVariants = cva(
           'bg-success-600 text-white shadow-sm hover:bg-success-700 active:bg-success-700',
         warning:
           'bg-warning-500 text-foreground shadow-sm hover:bg-warning-600 active:bg-warning-700',
-        outline:
-          'border border-input shadow-xs hover:bg-accent hover:text-accent-foreground active:bg-muted',
         secondary:
           'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary-200 active:bg-secondary-200',
         ghost:
           'hover:bg-accent hover:text-accent-foreground active:bg-muted',
         link:
           'text-primary underline-offset-4 hover:underline active:opacity-80 p-0 h-auto',
+      },
+      outline: {
+        true: 'bg-transparent border shadow-none',
+        false: '',
       },
       size: {
         default: 'h-9 px-4 py-2',
@@ -33,8 +35,42 @@ export const buttonVariants = cva(
         false: 'w-auto',
       },
     },
+    // اینجا ترکیب variant رنگی با outline را مشخص می‌کنیم:
+    compoundVariants: [
+      {
+        variant: 'primary',
+        outline: true,
+        class:
+          'border-primary text-primary hover:bg-primary/10 active:bg-primary/20',
+      },
+      {
+        variant: 'destructive',
+        outline: true,
+        class:
+          'border-destructive text-destructive hover:bg-destructive/10 active:bg-destructive/20',
+      },
+      {
+        variant: 'success',
+        outline: true,
+        class:
+          'border-success-600 text-success-600 hover:bg-success-50 active:bg-success-100',
+      },
+      {
+        variant: 'warning',
+        outline: true,
+        class:
+          'border-warning-500 text-warning-600 hover:bg-warning-50 active:bg-warning-100',
+      },
+      {
+        variant: 'secondary',
+        outline: true,
+        class:
+          'border-border text-secondary-foreground hover:bg-accent hover:text-accent-foreground active:bg-muted',
+      },
+    ],
     defaultVariants: {
-      variant: 'default',
+      variant: 'primary',
+      outline: false,
       size: 'default',
       fullWidth: false,
     },
