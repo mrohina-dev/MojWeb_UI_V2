@@ -11,6 +11,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant,
       size,
       fullWidth,
+      outline = false,
       loading = false,
       disabled,
       iconStart,
@@ -28,7 +29,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type}
         disabled={isDisabled}
-        className={cn(buttonVariants({ variant, size, fullWidth, className }))}
+        className={cn(
+          buttonVariants({ variant, size, fullWidth, outline, className })
+        )}
         {...props}
       >
         {loading ? (
