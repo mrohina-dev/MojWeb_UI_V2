@@ -4,7 +4,7 @@ import Button from "./button";
 import { Mail, Trash2, Send, Plus, Check } from "lucide-react";
 
 const meta: Meta<typeof Button> = {
-  title: "UI/Button",
+  title: "Components/UI/Button",
   component: Button,
   tags: ["autodocs"],
   parameters: {
@@ -13,7 +13,7 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     onClick: {
       action: "clicked",
-      description: "رویداد کلیک (در تب Actions پایین صفحه ثبت می‌شود)",
+      description: "رویداد کلیک (در تب Actions ثبت می‌شود)",
     },
     variant: {
       control: "select",
@@ -35,8 +35,12 @@ const meta: Meta<typeof Button> = {
     },
     size: {
       control: "select",
-      options: ["default", "sm", "lg", "icon"],
+      options: ["sm", "default", "lg"],
       description: "ابعاد و اندازه دکمه",
+    },
+    iconOnly: {
+      control: "boolean",
+      description: "حالت مربعی/دایره‌ای دکمه برای نمایش تک‌آیکون",
     },
     fullWidth: {
       control: "boolean",
@@ -102,7 +106,7 @@ export const Destructive: Story = {
   args: {
     variant: "destructive",
     children: "حذف آیتم",
-    iconStart: <Trash2 className="size-4" />,
+    iconStart: <Trash2 />,
   },
 };
 
@@ -112,7 +116,7 @@ export const DestructiveOutline: Story = {
     variant: "destructive",
     outline: true,
     children: "حذف آیتم",
-    iconStart: <Trash2 className="size-4" />,
+    iconStart: <Trash2 />,
   },
 };
 
@@ -129,7 +133,7 @@ export const WithIconStart: Story = {
   args: {
     variant: "primary",
     children: "ایجاد رکورد جدید",
-    iconStart: <Plus className="size-4" />,
+    iconStart: <Plus />,
   },
 };
 
@@ -138,22 +142,57 @@ export const WithIconEnd: Story = {
   args: {
     variant: "primary",
     children: "ارسال پیام",
-    iconEnd: <Send className="size-4" />,
+    iconEnd: <Send />,
   },
 };
 
-// ۱۰. دکمه فقط آیکون (Icon only)
+// ۱۰. دکمه فقط آیکون (Icon Only)
 export const IconOnly: Story = {
   args: {
     variant: "primary",
     outline: true,
-    size: "icon",
-    children: <Mail className="size-4" />,
+    iconOnly: true,
+    size: "default",
+    children: <Mail />,
     "aria-label": "ارسال ایمیل",
   },
 };
 
-// ۱۱. دکمه با تمام عرض (Full Width)
+// ۱۱. مقایسه تمام سایزهای دکمه فقط آیکون
+export const IconOnlySizes: Story = {
+  render: (args) => (
+    <div className="flex items-center gap-4">
+      <Button {...args} iconOnly size="sm" aria-label="کوچک">
+        <Mail />
+      </Button>
+      <Button {...args} iconOnly size="default" aria-label="پیش‌فرض">
+        <Mail />
+      </Button>
+      <Button {...args} iconOnly size="lg" aria-label="بزرگ">
+        <Mail />
+      </Button>
+    </div>
+  ),
+};
+
+// ۱۲. مقایسه سایزهای دکمه‌های متنی معمولی
+export const Sizes: Story = {
+  render: (args) => (
+    <div className="flex flex-wrap items-center gap-4">
+      <Button {...args} size="sm">
+        کوچک (sm)
+      </Button>
+      <Button {...args} size="default">
+        متوسط (default)
+      </Button>
+      <Button {...args} size="lg">
+        بزرگ (lg)
+      </Button>
+    </div>
+  ),
+};
+
+// ۱۳. دکمه با تمام عرض (Full Width)
 export const FullWidth: Story = {
   parameters: {
     layout: "padded",
@@ -173,7 +212,7 @@ export const FullWidth: Story = {
   ),
 };
 
-// ۱۲. نمونه تعاملی شبیه‌سازی لودینگ با کلیک (Interactive Loading)
+// ۱۴. نمونه تعاملی شبیه‌سازی لودینگ با کلیک (Interactive Loading)
 export const InteractiveLoading: Story = {
   render: () => {
     const InteractiveDemo = () => {
@@ -202,27 +241,7 @@ export const InteractiveLoading: Story = {
   },
 };
 
-// ۱۳. مقایسه تمام سایزها
-export const Sizes: Story = {
-  render: (args) => (
-    <div className="flex flex-wrap items-center gap-4">
-      <Button {...args} size="sm">
-        کوچک (sm)
-      </Button>
-      <Button {...args} size="default">
-        متوسط (default)
-      </Button>
-      <Button {...args} size="lg">
-        بزرگ (lg)
-      </Button>
-      <Button {...args} size="icon">
-        <Mail className="size-4" />
-      </Button>
-    </div>
-  ),
-};
-
-// ۱۴. ماتریس همه واریانت‌های توپر (Solid)
+// ۱۵. ماتریس همه واریانت‌های توپر (Solid)
 export const AllVariants: Story = {
   render: (args) => (
     <div className="flex flex-wrap items-center gap-3">
@@ -230,7 +249,7 @@ export const AllVariants: Story = {
       <Button {...args} variant="secondary">Secondary</Button>
       <Button {...args} variant="ghost">Ghost</Button>
       <Button {...args} variant="destructive">Destructive</Button>
-      <Button {...args} variant="success" iconStart={<Check className="size-4" />}>
+      <Button {...args} variant="success" iconStart={<Check />}>
         Success
       </Button>
       <Button {...args} variant="warning">Warning</Button>
@@ -239,14 +258,14 @@ export const AllVariants: Story = {
   ),
 };
 
-// ۱۵. ماتریس همه واریانت‌های خطی (Outline)
+// ۱۶. ماتریس همه واریانت‌های خطی (Outline)
 export const AllOutlineVariants: Story = {
   render: (args) => (
     <div className="flex flex-wrap items-center gap-3">
       <Button {...args} variant="primary" outline>Primary Outline</Button>
       <Button {...args} variant="secondary" outline>Secondary Outline</Button>
       <Button {...args} variant="destructive" outline>Destructive Outline</Button>
-      <Button {...args} variant="success" outline iconStart={<Check className="size-4" />}>
+      <Button {...args} variant="success" outline iconStart={<Check />}>
         Success Outline
       </Button>
       <Button {...args} variant="warning" outline>Warning Outline</Button>
