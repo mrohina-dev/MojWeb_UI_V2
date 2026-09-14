@@ -1,33 +1,65 @@
-import {
-  AUTH_TOKEN_KEY,
-  REFRESH_TOKEN_KEY,
-  TOKEN_EXPIRATION_KEY,
-} from "@/constants/auth.constants";
-
-export interface AuthTokens {
-  token: string;
-  refreshToken: string;
-  expiration: string;
-}
+import { AUTH_SESSION_KEY } from "@/constants/auth.constants";
+import type { AuthTokens } from "@/types/user.types";
 
 export const authStorage = {
-  getAccessToken: (): string | null => sessionStorage.getItem(AUTH_TOKEN_KEY),
-  getRefreshToken: (): string | null => sessionStorage.getItem(REFRESH_TOKEN_KEY),
-  getExpiration: (): string | null => sessionStorage.getItem(TOKEN_EXPIRATION_KEY),
+  /**
+   * دریافت کل آبجکت احراز هویت
+   */
+  getAuthData: (): AuthTokens | null => {
+    const raw = sessionStorage.getItem(AUTH_SESSION_KEY);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as AuthTokens;
+    } catch {
+      sessionStorage.removeItem(AUTH_SESSION_KEY);
+      return null;
+    }
+  },
 
+  /**
+   * ذخیره کل آبجکت سشن
+   */
   setAuthData: (data: AuthTokens): void => {
-    sessionStorage.setItem(AUTH_TOKEN_KEY, data.token);
-    sessionStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
-    sessionStorage.setItem(TOKEN_EXPIRATION_KEY, data.expiration);
+    sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(data));
   },
 
+  /**
+   * دریافت اکسس‌توکن برای هدر Authorization
+   */
+  getAccessToken: (): string | null => {
+    return authStorage.getAuthData()?.token ?? null;
+  },
+
+  /**
+   * دریافت رفرش‌توکن
+   */
+  getRefreshToken: (): string | null => {
+    return authStorage.getAuthData()?.refreshToken ?? null;
+  },
+
+  /**
+   * بررسی منقضی شدن اکسس‌توکن بر اساس تاریخ expiration
+   */
+  isTokenExpired: (): boolean => {
+    const auth = authStorage.getAuthData();
+    if (!auth?.expiration) return true;
+
+    // ۶۰ ثانیه حاشیه اطمینان (skew) برای جلوگیری از رقابت تایم شبکه
+    const expirationTime = new Date(auth.expiration).getTime() - 60 * 1000;
+    return Date.now() >= expirationTime;
+  },
+
+  /**
+   * پاک‌سازی کامل نشست
+   */
   clearAuthData: (): void => {
-    sessionStorage.removeItem(AUTH_TOKEN_KEY);
-    sessionStorage.removeItem(REFRESH_TOKEN_KEY);
-    sessionStorage.removeItem(TOKEN_EXPIRATION_KEY);
+    sessionStorage.removeItem(AUTH_SESSION_KEY);
   },
 
+  /**
+   * بررسی وجود نشست فعال
+   */
   isAuthenticated: (): boolean => {
-    return Boolean(sessionStorage.getItem(AUTH_TOKEN_KEY));
+    return Boolean(authStorage.getAccessToken());
   },
 };

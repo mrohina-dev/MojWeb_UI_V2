@@ -1,3 +1,1 @@
-export const AUTH_TOKEN_KEY = "auth_token";
-export const REFRESH_TOKEN_KEY = "refresh_token";
-export const TOKEN_EXPIRATION_KEY = "token_expiration";
+export const AUTH_SESSION_KEY = "auth_session";
