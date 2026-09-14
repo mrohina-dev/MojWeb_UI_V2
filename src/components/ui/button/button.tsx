@@ -1,15 +1,16 @@
-import * as React from 'react';
-import { Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { buttonVariants } from './button.variants';
-import type { ButtonProps } from './button.type';
+import { forwardRef } from "react";
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "./button.variants";
+import type { ButtonProps } from "./button.type";
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
       variant,
       size,
+      iconOnly,
       fullWidth,
       outline = false,
       loading = false,
@@ -17,7 +18,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       iconStart,
       iconEnd,
       children,
-      type = 'button',
+      type = "button",
       ...props
     },
     ref
@@ -30,7 +31,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         type={type}
         disabled={isDisabled}
         className={cn(
-          buttonVariants({ variant, size, fullWidth, outline, className })
+          buttonVariants({ variant, size, iconOnly, fullWidth, outline, className })
         )}
         {...props}
       >
@@ -50,6 +51,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Button.displayName = 'Button';
+Button.displayName = "Button";
 
 export default Button;
