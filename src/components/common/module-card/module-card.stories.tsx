@@ -3,7 +3,7 @@ import { UploadCloud, Users, Settings, Activity } from 'lucide-react';
 import ModuleCard from './module-card';
 
 const meta: Meta<typeof ModuleCard> = {
-  title: 'Common/ModuleCard',
+  title: 'Components/Common/ModuleCard',
   component: ModuleCard,
   tags: ['autodocs'],
   argTypes: {
