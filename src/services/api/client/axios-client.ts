@@ -3,6 +3,7 @@ import axios, { type AxiosInstance, type AxiosResponse, type InternalAxiosReques
 import { toast } from "sonner";
 import type { BackendResponse } from "./api.types";
 import { createApiError } from "./api-error";
+import { AUTH_TOKEN_KEY } from "@/constants/auth.constants";
 
 // افزودن فلگ‌های کنترلی به کانفیگ Axios بدون نقض قوانین ESLint
 declare module "axios" {
@@ -11,9 +12,6 @@ declare module "axios" {
     showSuccessToast?: boolean;  // آیا پیام موفقیت سرور توست شود؟ (پیش‌فرض: false)
   }
 }
-
-const AUTH_TOKEN_KEY = "auth_token";
-
 // مقدار Base URL از فایل .env خوانده می‌شود، در غیر این صورت مقدار پیش‌فرض
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/";
 
