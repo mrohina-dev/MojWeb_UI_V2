@@ -1,8 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { LoginPage } from "@/pages/login/LoginPage";
 import { HomePage } from "@/pages/home/HomePage";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicRoute } from "./PublicRoute";
+import LoginPage from "@/pages/login";
 
 export const router = createBrowserRouter([
   // مسیرهای عمومی (اگر لاگین باشد هدایت می‌شود به صفحه اصلی)
