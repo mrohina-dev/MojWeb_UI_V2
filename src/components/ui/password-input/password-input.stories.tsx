@@ -58,3 +58,11 @@ export const Disabled: Story = {
     defaultValue: "password123",
   },
 };
+
+export const NewPassword: Story = {
+  args: {
+    label: "رمز عبور جدید",
+    autoComplete: "new-password",
+    placeholder: "••••••••",
+  },
+};
