@@ -12,18 +12,18 @@ export const userService = {
   /**
    * دریافت تصویر کپچا به صورت Base64
    */
-  getCaptcha: () => {
-    return http.get<CaptchaResponse>("/api/User/GetCaptcha");
+   getCaptcha: () => {
+    return http.get<CaptchaResponse>("/api/common/GetCaptcha");
   },
 
   /**
-   * لاگین کاربر و ذخیره توکن‌ها
+   * لاگین کاربر   
    */
-  login: async (payload: LoginRequest) => {
+  login: async (payload: LoginRequest): Promise<LoginResponse> => {
     const data = await http.post<LoginResponse>("/api/User/Login", payload);
-    authStorage.setAuthData(data);
     return data;
   },
+
 
   /**
    * بررسی معتبر بودن توکن فعلی

@@ -5,7 +5,7 @@ import axios, {
 } from "axios";
 import { toast } from "sonner";
 import type { BackendResponse } from "./api.types";
-import { createApiError } from "./api-error";
+import { createApiError, isApiError } from "./api-error";
 import { authStorage } from "./auth-storage";
 import type { RefreshTokenResponse } from "@/types/user.types";
 
@@ -13,14 +13,16 @@ declare module "axios" {
   export interface AxiosRequestConfig {
     showErrorToast?: boolean;
     showSuccessToast?: boolean;
-    _retry?: boolean; // فلگ داخلی برای جلوگیری از چرخه بی‌نهایت رفرش
+    _retry?: boolean;
   }
 }
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/";
+const normalizedBaseUrl = BASE_URL.replace(/\/$/, "");
 
 export const axiosInstance: AxiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: normalizedBaseUrl,
+  withCredentials: true,
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
@@ -29,9 +31,20 @@ export const axiosInstance: AxiosInstance = axios.create({
 });
 
 /* =========================================================================
-   مدیریت هم‌زمانی و صف انتظار رفرش توکن (Queue Manager)
+   نرمال‌سازی پاسخ بک‌اند (PascalCase → camelCase)
+   ========================================================================= */
+const normalizeResponse = <T>(body: BackendResponse<T>) => ({
+  data: body.data ?? body.Data,
+  isSuccess: body.isSuccess ?? body.IsSuccess ?? true,
+  statusCode: body.statusCode ?? body.StatusCode ?? 0,
+  message: body.message ?? body.Message ?? "",
+});
+
+/* =========================================================================
+   مدیریت هم‌زمانی و صف انتظار رفرش توکن
    ========================================================================= */
 let isRefreshing = false;
+let isRedirecting = false;
 let failedQueue: Array<{
   resolve: (token: string) => void;
   reject: (error: unknown) => void;
@@ -40,7 +53,10 @@ let failedQueue: Array<{
 const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
-      prom.reject(error);
+      const apiErr = isApiError(error)
+        ? error
+        : createApiError("خطا در تمدید نشست", 1401, error);
+      prom.reject(apiErr);
     } else if (token) {
       prom.resolve(token);
     }
@@ -48,174 +64,193 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
-/**
- * هدایت کاربر به صفحه لاگین همراه با پیام و پاک‌سازی کامل
- */
-const handleSessionExpired = (message = "نشست شما منقضی شد. لطفاً دوباره وارد شوید.") => {
+const handleSessionExpired = (
+  message = "نشست شما منقضی شد. لطفاً دوباره وارد شوید."
+) => {
   authStorage.clearAuthData();
+
+  if (isRedirecting) return;
+
   toast.error(message);
-  if (window.location.pathname !== "/login") {
+
+  if (!window.location.pathname.endsWith("/login")) {
+    isRedirecting = true;
     setTimeout(() => {
       window.location.href = "/login";
+      isRedirecting = false;
     }, 1200);
   }
 };
 
 /* =========================================================================
-   1. Request Interceptor: الصاق توکن به Header
+   1. Request Interceptor
    ========================================================================= */
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = authStorage.getAccessToken();
-
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config;
   },
   (error) => Promise.reject(error)
 );
 
 /* =========================================================================
-   2. Response Interceptor: مدیریت پاسخ‌ها و رفرش توکن خودکار
+   2. Response Interceptor — پاسخ‌های موفق (2xx)
    ========================================================================= */
 axiosInstance.interceptors.response.use(
   async (response: AxiosResponse) => {
-    const resBody = response.data as BackendResponse;
-    const config = response.config;
 
-    const data = resBody?.data ?? resBody?.Data;
-    const isSuccess = resBody?.isSuccess ?? resBody?.IsSuccess ?? true;
-    const statusCode = resBody?.statusCode ?? resBody?.StatusCode ?? 0;
-    const message = resBody?.message ?? resBody?.Message ?? "";
-
-    // اگر خطای انقضای نشست باشد (کد بیزنسی 1401)
-    if (statusCode === 1401) {
-      return handleUnauthorizedFlow(response.config, message);
+    if (response.data instanceof Blob || response.config.responseType === "blob") {
+      return response;
     }
 
-    // خطای بیزنسی سرور
-    if (!isSuccess || statusCode !== 0) {
-      const errorMessage = message || "خطایی در پردازش درخواست رخ داد.";
+    const normalized = normalizeResponse(response.data as BackendResponse);
+    const config = response.config;
+
+    if (normalized.statusCode === 1401) {
+      return handleUnauthorizedFlow(config, normalized.message);
+    }
+
+    if (!normalized.isSuccess || normalized.statusCode !== 0) {
+      const errorMessage =
+        normalized.message || "خطایی در پردازش درخواست رخ داد.";
 
       if (config.showErrorToast !== false) {
         toast.error(errorMessage);
       }
 
-      return Promise.reject(createApiError(errorMessage, statusCode, data));
+      return Promise.reject(
+        createApiError(errorMessage, normalized.statusCode, normalized.data)
+      );
     }
 
-    // پیام موفقیت اختیاری
-    if (config.showSuccessToast && message) {
-      toast.success(message);
+    if (config.showSuccessToast && normalized.message) {
+      toast.success(normalized.message);
     }
 
-    // داده Unwrap شده
-    response.data = data;
+    response.data = normalized.data;
     return response;
   },
-  async (error) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig;
 
-    // اگر خطای HTTP 401 رخ داده باشد
+  /* =========================================================================
+     3. Response Interceptor — خطاهای HTTP واقعی (4xx، 5xx، network)
+     ========================================================================= */
+  async (error) => {
+    const originalRequest = error.config as
+      | InternalAxiosRequestConfig
+      | undefined;
+
     if (error.response?.status === 401 && originalRequest) {
       return handleUnauthorizedFlow(originalRequest);
     }
 
-    // خطاهای سرور، 500 یا عدم ارتباط شبکه
     const message =
-      error.response?.data?.message ||
-      error.response?.data?.Message ||
+      (error.response?.data as BackendResponse)?.message ??
+      (error.response?.data as BackendResponse)?.Message ??
       "ارتباط با سرور برقرار نشد. لطفاً وضعیت شبکه را بررسی کنید.";
 
     if (error.config?.showErrorToast !== false) {
       toast.error(message);
     }
 
-    return Promise.reject(error);
+    return Promise.reject(
+      createApiError(
+        message,
+        error.response?.status ?? 0,
+        error.response?.data
+      )
+    );
   }
 );
 
 /* =========================================================================
-   3. متد مشترک چرخه Silent Refresh برای خطاهای 1401 و 401
+   4. چرخه Silent Refresh
    ========================================================================= */
 async function handleUnauthorizedFlow(
   originalConfig: InternalAxiosRequestConfig,
   customMessage?: string
-) {
-  // اگر درخواست مربوط به خودِ لاگین یا رفرش‌توکن باشد، دوباره وارد پروسه رفرش نشود
-  if (
-    originalConfig.url?.includes("/api/User/Login") ||
-    originalConfig.url?.includes("/api/User/refreshToken")
-  ) {
+): Promise<AxiosResponse> {
+  const isAuthEndpoint =
+    originalConfig.url?.endsWith("/api/User/Login") ||
+    originalConfig.url?.endsWith("/api/User/refreshToken");
+
+  if (isAuthEndpoint) {
     handleSessionExpired(customMessage);
-    return Promise.reject(createApiError(customMessage || "اطلاعات ورود نامعتبر است", 1401));
+    return Promise.reject(
+      createApiError(
+        customMessage || "اطلاعات ورود نامعتبر است.",
+        1401
+      )
+    );
   }
 
   const refreshToken = authStorage.getRefreshToken();
 
-  // اگر رفرش توکن وجود نداشت، مستقیماً نشست بسته شود
   if (!refreshToken) {
     handleSessionExpired(customMessage);
-    return Promise.reject(createApiError("نشست کاربری نامعتبر است.", 1401));
+    return Promise.reject(
+      createApiError("نشست کاربری نامعتبر است.", 1401)
+    );
   }
 
-  // اگر قبلاً برای این درخواست یک‌بار رفرش زده شده و مجدد رد شده، متوقف شود
   if (originalConfig._retry) {
     handleSessionExpired();
     return Promise.reject(createApiError("انقضای مجدد نشست.", 1401));
   }
 
-  // اگر در حال حاضر یک درخواست رفرش دیگر در جریان است، بقیه در صف منتظر بمانند
   if (isRefreshing) {
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       failedQueue.push({ resolve, reject });
-    })
-      .then((newToken) => {
-        if (originalConfig.headers) {
-          originalConfig.headers.Authorization = `Bearer ${newToken}`;
-        }
-        return axiosInstance(originalConfig);
-      })
-      .catch((err) => Promise.reject(err));
+    }).then((newToken) => {
+      if (originalConfig.headers) {
+        originalConfig.headers.Authorization = `Bearer ${newToken}`;
+      }
+      return axiosInstance(originalConfig);
+    });
   }
 
   originalConfig._retry = true;
   isRefreshing = true;
 
   try {
-    // طبق توضیحات شما، فیلد token مقدار refreshToken را دریافت می‌کند
-    const refreshResponse = await axios.post<BackendResponse<RefreshTokenResponse>>(
-      `${BASE_URL.replace(/\/$/, "")}/api/User/refreshToken`,
+    const refreshResponse = await axios.post<
+      BackendResponse<RefreshTokenResponse>
+    >(
+      `${normalizedBaseUrl}/api/User/refreshToken`,
       { token: refreshToken },
       { headers: { "Content-Type": "application/json" } }
     );
 
-    const resData = refreshResponse.data?.data ?? refreshResponse.data?.Data;
-    const isSuccess = refreshResponse.data?.isSuccess ?? refreshResponse.data?.IsSuccess;
+    const normalized = normalizeResponse(refreshResponse.data);
 
-    if (!isSuccess || !resData?.token) {
-      throw new Error("خطا در تمدید توکن");
+    if (!normalized.isSuccess || !normalized.data?.token) {
+      throw createApiError("خطا در تمدید توکن", 1401, normalized.data);
     }
 
-    // ذخیره توکن‌های جدید به صورت آبجکت واحد
-    authStorage.setAuthData(resData);
+    authStorage.setAuthData(normalized.data);
 
-    // به‌روزرسانی هدر درخواست اصلی
     if (originalConfig.headers) {
-      originalConfig.headers.Authorization = `Bearer ${resData.token}`;
+      originalConfig.headers.Authorization = `Bearer ${normalized.data.token}`;
     }
 
-    // آزاد کردن تمام درخواست‌های در صف مانده
-    processQueue(null, resData.token);
-
-    // تکرار درخواست اصلی کاربر با توکن جدید
+    processQueue(null, normalized.data.token);
     return axiosInstance(originalConfig);
   } catch (refreshErr) {
-    processQueue(refreshErr, null);
-    handleSessionExpired("اعتبار نشست شما به پایان رسید. لطفاً مجدداً وارد شوید.");
-    return Promise.reject(refreshErr);
+    const apiErr = isApiError(refreshErr)
+      ? refreshErr
+      : createApiError(
+        "اعتبار نشست شما به پایان رسید.",
+        1401,
+        refreshErr
+      );
+
+    processQueue(apiErr, null);
+    handleSessionExpired(
+      "اعتبار نشست شما به پایان رسید. لطفاً مجدداً وارد شوید."
+    );
+    return Promise.reject(apiErr);
   } finally {
     isRefreshing = false;
   }
