@@ -1,11 +1,56 @@
-import type { CaptchaResponse } from "@/types/userResponse.type";
+import type {
+  CaptchaResponse,
+  LoginRequest,
+  LoginResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+} from "@/types/user.types";
 import { http } from "./client/http-service";
-
+import { authStorage } from "./client/auth-storage";
 
 export const userService = {
-  getCaptcha: () => {
-    return http.get<CaptchaResponse>("/api/User/GetCaptcha");
+  /**
+   * دریافت تصویر کپچا به صورت Base64
+   */
+   getCaptcha: () => {
+    return http.get<CaptchaResponse>("/api/common/GetCaptcha");
   },
-  
-  // متدهای بعدی مربوط به یوزر هم همین‌جا اضافه می‌شوند:
+
+  /**
+   * لاگین کاربر   
+   */
+  login: async (payload: LoginRequest): Promise<LoginResponse> => {
+    const data = await http.post<LoginResponse>("/api/User/Login", payload);
+    return data;
+  },
+
+
+  /**
+   * بررسی معتبر بودن توکن فعلی
+   * در صورت نامعتبر بودن، توست خطا نمایش داده نمی‌شود تا سایلنت هندل شود.
+   */
+  checkTokenIsValid: () => {
+    return http.get<null>("/api/User/TokenIsValid", {
+      showErrorToast: false,
+    });
+  },
+
+  /**
+   * دریافت توکن جدید با استفاده از توکن رفرش یا توکن فعلی
+   */
+  refreshToken: async (payload: RefreshTokenRequest) => {
+    const data = await http.post<RefreshTokenResponse>(
+      "/api/User/refreshToken",
+      payload
+    );
+    authStorage.setAuthData(data);
+    return data;
+  },
+
+  /**
+   * خروج کاربر و پاک‌سازی کامل نشست
+   */
+  logout: () => {
+    authStorage.clearAuthData();
+  },
 };

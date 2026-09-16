@@ -18,6 +18,16 @@ export default defineConfig({
       "@": path.resolve(import.meta.dirname, "./src")
     }
   },
+  server: {
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'https://172.16.20.35:8131',
+        changeOrigin: true,
+        secure: false, // اگر گواهی SSL خودامضا (Self-signed) است
+      },
+    },
+  },
   test: {
     projects: [{
       extends: true,

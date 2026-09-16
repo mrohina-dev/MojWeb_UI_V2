@@ -329,4 +329,9 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+# نادیده گرفتن تمام فایل‌های env
 .env
+.env.*
+
+# به جز فایل نمونه
+!.env.example

@@ -86,6 +86,17 @@ export const buttonVariants = cva(
         class:
           "border-border text-secondary-foreground hover:bg-accent hover:text-accent-foreground active:bg-muted",
       },
+      {
+        variant: "ghost",
+        outline: true,
+        className:
+          "border border-current bg-transparent hover:bg-current/10",
+      },
+      {
+        variant: "link",
+        outline: true,
+        className: "border-b border-current rounded-none px-0",
+      },
     ],
     defaultVariants: {
       variant: "primary",
