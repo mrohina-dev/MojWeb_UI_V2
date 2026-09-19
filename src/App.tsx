@@ -1,16 +1,11 @@
-// src/App.tsx
-import { Suspense } from "react";
-import { AppRouter } from "@/routes";
-import { LoadingState } from "@/components/ui/loading-state/loading-state";
-import { Toaster } from "@/components/ui/sonner";
+import { RouterProvider } from "react-router-dom";
+import { router } from "@/routes";
+import { Toaster } from "./components/ui/sonner";
 
 export function App() {
   return (
     <>
-      <Suspense fallback={<LoadingState mode="viewport" size="lg" />}>
-        <AppRouter />
-      </Suspense>
-
+      <RouterProvider router={router} />
       <Toaster position="top-center" expand={false} showProgress={true} />
     </>
   );
