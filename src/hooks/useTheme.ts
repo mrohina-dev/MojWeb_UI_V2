@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 export type Theme = 'light' | 'dark';
 
-const THEME_KEY = 'novaflow-ui-theme';
+const THEME_KEY = 'ui-theme';
 
 export function useTheme() {
   const [theme, setTheme] = useState<Theme>(() => {
