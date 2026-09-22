@@ -1,11 +1,13 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
-import { HomePage } from "@/pages/home/HomePage";
+// src/routes/AppRouter.tsx
+import { lazy } from "react";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicRoute } from "./PublicRoute";
-import LoginPage from "@/pages/login";
 
-export const router = createBrowserRouter([
-  // مسیرهای عمومی (اگر لاگین باشد هدایت می‌شود به صفحه اصلی)
+const HomePage = lazy(() => import("@/pages/home/HomePage"));
+const LoginPage = lazy(() => import("@/pages/login"));
+
+const router = createBrowserRouter([
   {
     element: <PublicRoute />,
     children: [
@@ -15,7 +17,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  // مسیرهای محافظت‌شده (نیاز به لاگین دارند)
   {
     element: <ProtectedRoute />,
     children: [
@@ -25,9 +26,12 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  // مسیرهای تعریف‌ نشده (404 یا Fallback)
   {
     path: "*",
     element: <Navigate to="/" replace />,
   },
 ]);
+
+export function AppRouter() {
+  return <RouterProvider router={router} />;
+}
