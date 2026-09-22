@@ -1,7 +1,7 @@
-import { cva } from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority";
 
 export const labelVariants = cva(
-  ["text-sm font-medium leading-none select-none text-foreground"],
+  "text-sm font-medium leading-none select-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-60",
   {
     variants: {
       disabled: {
@@ -17,3 +17,5 @@ export const labelVariants = cva(
     },
   }
 );
+
+export type LabelVariantProps = VariantProps<typeof labelVariants>;
