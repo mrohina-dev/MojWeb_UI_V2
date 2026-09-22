@@ -13,7 +13,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ۱. حالت پیش‌فرض (الان بدون ارسال کلاس هم خط پیش‌فرض نمایش داده می‌شود)
+// ۱. حالت پیش‌فرض (بدون ارسال کلاس، خط پیش‌فرض نمایش داده می‌شود)
 export const Default: Story = {
   args: {},
   render: (args) => (
@@ -23,7 +23,7 @@ export const Default: Story = {
   ),
 };
 
-// ۲. وریانت‌های شکل
+// ۲. وریانت‌های شکل (Shapes)
 export const Shapes: Story = {
   render: () => (
     <div className="flex items-center gap-4">
@@ -35,7 +35,27 @@ export const Shapes: Story = {
   ),
 };
 
-// ۳. حالت جدول پیش‌فرض (۵ سطر و ۴ ستون)
+// ۳. وریانت‌های انیمیشن (Animations: pulse, wave, none)
+export const Animations: Story = {
+  render: () => (
+    <div className="flex flex-col gap-6 w-80">
+      <div className="space-y-2">
+        <span className="text-xs font-medium text-muted-foreground">Pulse (پیش‌فرض)</span>
+        <Skeleton animation="pulse" />
+      </div>
+      <div className="space-y-2">
+        <span className="text-xs font-medium text-muted-foreground">Wave (افکت براق/Shimmer)</span>
+        <Skeleton animation="wave" className="h-6" />
+      </div>
+      <div className="space-y-2">
+        <span className="text-xs font-medium text-muted-foreground">None (بدون انیمیشن)</span>
+        <Skeleton animation="none" />
+      </div>
+    </div>
+  ),
+};
+
+// ۴. حالت جدول پیش‌فرض (۵ سطر و ۴ ستون)
 export const TableExample: Story = {
   render: () => (
     <div className="w-150">
@@ -44,7 +64,7 @@ export const TableExample: Story = {
   ),
 };
 
-// ۴. جدول بزرگ بدون هدر
+// ۵. جدول بزرگ بدون هدر
 export const TableWithoutHeader: Story = {
   render: () => (
     <div className="w-150">
@@ -53,14 +73,14 @@ export const TableWithoutHeader: Story = {
   ),
 };
 
-// ۵. نمونه کارت پروفایل
+// ۶. نمونه کارت پروفایل
 export const ProfileCardExample: Story = {
   render: () => (
-    <div className="flex items-center gap-3 p-4 border border-border rounded-xl w-72 bg-card">
+    <div className="flex items-center gap-3 p-4 border border-border rounded-xl w-72 bg-card shadow-sm">
       <Skeleton variant="circular" />
       <div className="space-y-2 flex-1">
-        <Skeleton className="w-3/4" />
-        <Skeleton className="w-1/2" />
+        <Skeleton className="w-3/4 h-4" />
+        <Skeleton className="w-1/2 h-3" />
       </div>
     </div>
   ),

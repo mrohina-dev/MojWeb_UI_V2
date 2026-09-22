@@ -5,7 +5,6 @@ export const skeletonVariants = cva(
   {
     variants: {
       variant: {
-        // دادن ابعاد حداقلی پیش‌فرض تا در صورت ارسال نکردن کلاس هم دیده شود
         default: "h-4 w-full rounded-md",
         circular: "size-10 rounded-full",
         rounded: "h-10 w-full rounded-lg",
