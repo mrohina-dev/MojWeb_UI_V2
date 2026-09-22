@@ -1,3 +1,4 @@
-export * from './sonner';
-export type { ToasterProps } from './sonner.type';
-export { default } from "./sonner";
+export { Toaster, default } from "./sonner";
+export { toastVariants } from "./sonner.variants";
+export * from "./sonner.type";
+export { toast } from "sonner";
