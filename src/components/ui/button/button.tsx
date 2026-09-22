@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { Button as BaseButton } from "@base-ui/react/button";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./button.variants";
@@ -26,7 +27,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const isDisabled = disabled || loading;
 
     return (
-      <button
+      <BaseButton
         ref={ref}
         type={type}
         disabled={isDisabled}
@@ -35,6 +36,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         {...props}
       >
+        {/* Render logic */}
         {loading ? (
           <Loader2 className="animate-spin" />
         ) : (
@@ -46,7 +48,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {!loading && iconEnd && (
           <span className="inline-flex shrink-0">{iconEnd}</span>
         )}
-      </button>
+      </BaseButton>
     );
   }
 );
