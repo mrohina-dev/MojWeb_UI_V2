@@ -1,8 +1,8 @@
-// src/routes/AppRouter.tsx
 import { lazy } from "react";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicRoute } from "./PublicRoute";
+import GeneralLayout from "@/components/layout/general-layout";
 
 const HomePage = lazy(() => import("@/pages/home/HomePage"));
 const LoginPage = lazy(() => import("@/pages/login"));
@@ -21,8 +21,15 @@ const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: "/",
-        element: <HomePage />,
+        // لایوت کلی هدر برای تمام صفحات محافظت‌شده
+        element: <GeneralLayout />,
+        children: [
+          {
+            path: "/",
+            element: <HomePage />,
+          },
+          // صفحات بعدی (ماژول‌ها، گزارش‌ها و ...) خیلی تمیز اینجا اضافه می‌شوند
+        ],
       },
     ],
   },
