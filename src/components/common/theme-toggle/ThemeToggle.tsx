@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import type { ThemeToggleProps } from './ThemeToggle.type';
+import Button from '@/components/ui/button';
 
 export const ThemeToggle = forwardRef<HTMLButtonElement, ThemeToggleProps>(
   ({ className = '', ...props }, ref) => {
@@ -9,20 +10,21 @@ export const ThemeToggle = forwardRef<HTMLButtonElement, ThemeToggleProps>(
     const isDark = theme === 'dark';
 
     return (
-      <button
+      <Button
         ref={ref}
-        type="button"
+        iconOnly
         onClick={toggleTheme}
+        variant='ghost'
         aria-label={isDark ? 'تغییر به تم روشن' : 'تغییر به تم تاریک'}
-        className={`relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-foreground shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring p-0.5 ${className}`}
+        className={`text-muted-foreground hover:text-foreground ${className}`}
         {...props}
       >
         {isDark ? (
-          <Moon className="h-4 w-4 transition-transform duration-200" />
+          <Moon className="transition-transform duration-200" />
         ) : (
-          <Sun className="h-4 w-4 transition-transform duration-200" />
+          <Sun className="transition-transform duration-200" />
         )}
-      </button>
+      </Button>
     );
   }
 );
