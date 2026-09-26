@@ -1,14 +1,17 @@
 import { cva } from 'class-variance-authority';
 
 export const headerVariants = cva(
-  'sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b px-4 backdrop-blur-md transition-colors md:px-6',
+  // اضافه کردن shadow-sm برای عمق
+  // تغییر bg-background/80 به bg-background/90 یا 95 برای غلظت بیشتر لایه
+  'sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b shadow-sm backdrop-blur-md transition-colors md:px-6',
   {
     variants: {
       variant: {
-        // حالت مینیمال: کاملاً منطبق بر پس‌زمینه و حاشیه کلی سامانه
-        default: 'border-border/70 bg-background/80 text-foreground',
-        // حالت Primary: از توکن اصلی primary و primary-foreground استفاده می‌کند
-        primary: 'border-primary/20 bg-primary text-primary-foreground shadow-sm',
+        // در حالت default: پس‌زمینه را کمی غلیظ‌تر کردیم (95) تا سایه بهتر دیده شود
+        default: 'border-border/70 bg-background/95 text-foreground',
+        
+        // در حالت primary: سایه را کمی تیره‌تر کردیم تا در پس‌زمینه رنگی، عمق ایجاد کند
+        primary: 'border-primary/20 bg-primary text-primary-foreground shadow-md shadow-primary/20',
       },
     },
     defaultVariants: {
