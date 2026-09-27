@@ -4,9 +4,9 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 import type { GeneralLayoutProps } from './GeneralLayout.types';
-import { authStorage } from '@/services/api/client/auth-storage';
 import Header from '../Header';
 import ConfirmDialog from '@/components/common/confirm-dialog';
+import { userService } from '@/services/api/user.service';
 
 const LOGIN_ROUTE = '/login';
 
@@ -29,15 +29,15 @@ export const GeneralLayout = ({ children, className }: GeneralLayoutProps) => {
   };
 
   const handleConfirmLogout = async () => {
-    try {
-      setIsLoggingOut(true);
-      authStorage.clearAuthData();
-      navigate(LOGIN_ROUTE, { replace: true });
-    } finally {
-      setIsLoggingOut(false);
-      setIsLogoutDialogOpen(false);
-    }
-  };
+  try {
+    setIsLoggingOut(true);
+    await userService.logout();
+    navigate(LOGIN_ROUTE, { replace: true });
+  } finally {
+    setIsLoggingOut(false);
+    setIsLogoutDialogOpen(false);
+  }
+};
 
   return (
     <div

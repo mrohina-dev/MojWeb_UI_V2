@@ -50,7 +50,16 @@ export const userService = {
   /**
    * خروج کاربر و پاک‌سازی کامل نشست
    */
-  logout: () => {
-    authStorage.clearAuthData();
+  logout: async () => {
+    try {
+      // اگر بک‌اند POST است:
+      await http.get<null>("/api/User/Logout", {
+        showSuccessToast: true,  
+        showErrorToast: true,    
+      });
+    } finally {
+      // حتی اگر درخواست fail شد، برای امنیت/UX معمولاً پاک‌سازی کلاینت انجام می‌شود
+      authStorage.clearAuthData();
+    }
   },
 };
