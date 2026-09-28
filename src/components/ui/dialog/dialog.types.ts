@@ -82,7 +82,13 @@ export interface DialogProps extends BaseDialogProps {
    * @default true
    */
   showCloseButton?: boolean;
+    /**
+   * نمایش دکمه تمام‌صفحه / بزرگ‌نمایی در هدر پنجره
+   */
   showMaximizeButton?: boolean;
+  /**
+   * وضعیت کنترل‌شده تمام‌صفحه بودن
+   */
   isMaximized?: boolean;
   defaultMaximized?: boolean;
   onMaximizedChange?: (maximized: boolean) => void;
