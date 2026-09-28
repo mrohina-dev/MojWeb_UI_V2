@@ -7,13 +7,12 @@ import {
   Loader2Icon,
 } from "lucide-react";
 import { toastVariants } from "./sonner.variants";
-import './sonner.css'
+import "./sonner.css";
 import type { ToasterProps } from "./sonner.type";
-
-
 
 export const Toaster = ({
   showProgress = true,
+  size,
   ...props
 }: ToasterProps) => {
   return (
@@ -30,19 +29,18 @@ export const Toaster = ({
       }}
       toastOptions={{
         classNames: {
-          toast: toastVariants({ variant: "default", showProgress }),
+          toast: toastVariants({ variant: "default", size, showProgress }),
           description: "!text-muted-foreground text-xs opacity-90",
           actionButton:
             "font-medium rounded-lg text-xs px-3 py-1.5 transition-colors cursor-pointer",
           cancelButton:
             "!bg-muted/80 hover:!bg-muted !text-muted-foreground font-medium rounded-lg text-xs px-3 py-1.5 transition-colors cursor-pointer",
-          success: toastVariants({ variant: "success", showProgress }),
-          warning: toastVariants({ variant: "warning", showProgress }),
-          error: toastVariants({ variant: "error", showProgress }),
-          info: toastVariants({ variant: "info", showProgress }),
+          success: toastVariants({ variant: "success", size, showProgress }),
+          warning: toastVariants({ variant: "warning", size, showProgress }),
+          error: toastVariants({ variant: "error", size, showProgress }),
+          info: toastVariants({ variant: "info", size, showProgress }),
         },
       }}
-
       {...props}
     />
   );

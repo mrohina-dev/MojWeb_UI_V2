@@ -42,13 +42,16 @@
 }
 
 /* ------------------------------------------------------------- */
-/* ۲. چیدمان اجباری دو سطری (دکمه‌ها زیر توضیحات)               */
+/* ۲. چیدمان سطری و دکمه‌ها بدون به هم ریختن سایز اتوماتیک        */
 /* ------------------------------------------------------------- */
 
 /* فعال‌سازی قابلیت شکست خطوط در کانتینر کارت */
 [data-sonner-toast] {
+  display: flex !important;
   flex-wrap: wrap !important;
   align-items: flex-start !important;
+  gap: 0.5rem 0.75rem !important;
+  box-sizing: border-box !important;
 }
 
 /* آیکون کارت */
@@ -57,28 +60,25 @@
   flex-shrink: 0 !important;
 }
 
-/* پر کردن کامل سطر اول توسط محتوای متنی جهت راندن دکمه‌ها به سطر بعد */
+/* محتوای متنی - اجازه رشد با توجه به محتوا */
 [data-sonner-toast] [data-content] {
-  flex: 1 1 0% !important;
-  min-width: calc(100% - 2.5rem) !important;
-}
-
-/* حالتی که توست آیکون ندارد */
-[data-sonner-toast]:not(:has([data-icon])) [data-content] {
-  min-width: 100% !important;
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
 }
 
 /* ------------------------------------------------------------- */
-/* ۳. تنظیم موقعیت و ترتیب دکمه‌های Action و Cancel             */
+/* ۳. تنظیم موقعیت و شکست خط دکمه‌های Action و Cancel           */
 /* ------------------------------------------------------------- */
 
 [data-sonner-toast] [data-button],
 [data-sonner-toast] [data-cancel] {
-  margin-top: 0.75rem !important;
+  margin-top: 0.5rem !important;
   flex-shrink: 0 !important;
 }
 
-/* دکمه Action: ابتدا قرار می‌گیرد و با margin-inline-start به سمت چپ هل داده می‌شود */
+/* دکمه Action: ابتدا قرار می‌گیرد و با margin-inline-start به چپ هل داده می‌شود */
 [data-sonner-toast] [data-button] {
   order: 1 !important;
   margin-inline-start: auto !important;

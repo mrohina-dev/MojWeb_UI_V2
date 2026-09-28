@@ -44,6 +44,15 @@ const meta: Meta<typeof Toaster> = {
         defaultValue: { summary: "top-center" },
       },
     },
+    size: {
+      control: "select",
+      options: ["default", "sm", "md", "lg", "full"],
+      description: "اندازه عرض کارت اعلان بر اساس ToastVariantProps",
+      table: {
+        type: { summary: "'default' | 'sm' | 'md' | 'lg' | 'full'" },
+        defaultValue: { summary: "default" },
+      },
+    },
     expand: {
       control: "boolean",
       description:
@@ -165,6 +174,7 @@ const ToastActionButtons = () => (
 export const Default: Story = {
   args: {
     position: "top-center",
+    size: "default",
     expand: false,
     showProgress: true,
   },
@@ -187,8 +197,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html dir="rtl" lang="fa">
       <body>
         {children}
-        {/* کانتینر مرکزی اعلان‌ها با نوار پیشرفت فعال */}
-        <Toaster position="top-center" expand={false} showProgress={true} />
+        {/* کانتینر مرکزی اعلان‌ها با نوار پیشرفت فعال و سایز پیش‌فرض */}
+        <Toaster position="top-center" size="default" expand={false} showProgress={true} />
       </body>
     </html>
   );
@@ -256,37 +266,254 @@ toast.dismiss(toastId); // بستن یک اعلان خاص`,
   },
 };
 
-/** استوری اختصاصی برای تست موقعیت‌های مختلف */
-export const Positions: Story = {
-  args: {
-    position: "top-right",
-    expand: false,
-    showProgress: true,
+/** لیست تمام سایزها به ترتیب و به‌صورت هم‌زمان بدون وابستگی به Controls */
+export const Sizes: Story = {
+  render: () => {
+    const SIZES = [
+      {
+        id: "toaster-size-default",
+        name: "default",
+        label: "سایز پیش‌فرض (فیت کانتنت: min-w: 16rem - max-w: md)",
+        description: "عرض کارت خودکار و بر اساس طول متن پیام تنظیم می‌شود.",
+      },
+      {
+        id: "toaster-size-sm",
+        name: "sm",
+        label: "سایز کوچک (Small: 18rem)",
+        description: "مناسب برای پیام‌های کوتاه، تایید سریع و نوتیفیکیشن‌های مختصر.",
+      },
+      {
+        id: "toaster-size-md",
+        name: "md",
+        label: "سایز متوسط (Medium: 22rem)",
+        description: "اندازه متداول برای پیام‌هایی که عنوان و یک خط توضیحات دارند.",
+      },
+      {
+        id: "toaster-size-lg",
+        name: "lg",
+        label: "سایز بزرگ (Large: 28rem)",
+        description: "مناسب برای پیام‌های چندسطری، لاگ‌های خطا یا کارت‌های دارای دکمه Action.",
+      },
+      {
+        id: "toaster-size-full",
+        name: "full",
+        label: "تمام‌عرض (Full: 100%)",
+        description: "تمام پهنای در دسترس کانتینر والد خود را پوشش می‌دهد.",
+      },
+    ] as const;
+
+    return (
+      <div className="flex flex-col gap-6 w-full max-w-2xl py-4">
+        {/* رندر هم‌زمان Toasterها با شناسه‌های مستقل */}
+        {SIZES.map((s) => (
+          <Toaster
+            key={s.id}
+            id={s.id}
+            size={s.name}
+            position="top-center"
+            showProgress
+          />
+        ))}
+
+        <div className="text-center">
+          <h3 className="text-base font-bold text-foreground">
+            بررسی هم‌زمان تمام سایزهای Toast
+          </h3>
+          <p className="text-xs text-muted-foreground mt-1">
+            با کلیک روی هر دکمه، اعلان در سایز مربوطه نمایش داده می‌شود:
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          {SIZES.map((s) => (
+            <div
+              key={s.id}
+              className="flex items-center justify-between gap-4 p-4 border rounded-xl bg-card border-border shadow-xs"
+            >
+              <div className="flex flex-col gap-1 text-right">
+                <span className="text-sm font-semibold text-foreground">
+                  {s.label}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {s.description}
+                </span>
+              </div>
+
+              <Button
+                variant="primary"
+                onClick={() =>
+                  toast.info(`اعلان با سایز ${s.name}`, {
+                    description: s.description,
+                    toasterId: s.id,
+                  })
+                }
+              >
+                نمایش سایز {s.name}
+              </Button>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   },
-  render: (args) => (
-    <div className="flex flex-col items-center gap-4">
-      <Toaster {...args} />
-      <p className="text-sm text-muted-foreground text-center max-w-md">
-        موقعیت را از بخش <strong className="text-foreground">Controls</strong> تغییر دهید تا مکان نمایش را از میان ۶ موقعیت استاندارد بررسی فرمایید.
-      </p>
-      <Button
-        variant="primary"
-        onClick={() =>
-          toast.success("موقعیت اعلان تغییر یافت", {
-            description: "این اعلان در مختصات مشخص شده نمایش داده می‌شود.",
-          })
-        }
-      >
-        نمایش اعلان در موقعیت انتخابی
-      </Button>
-    </div>
-  ),
+  parameters: {
+    docs: {
+      source: {
+        code: `// استفاده از سایزهای مختلف در Toaster:
+// <Toaster size="default" /> // فیت کانتنت (پیش‌فرض)
+// <Toaster size="sm" />      // 18rem
+// <Toaster size="md" />      // 22rem
+// <Toaster size="lg" />      // 28rem
+// <Toaster size="full" />    // 100% عرض والد`,
+        language: "tsx",
+        format: true,
+      },
+    },
+  },
+};
+
+/** نمایش و تست تمام موقعیت‌های ۶‌گانه به‌صورت هم‌زمان و چیدمان فضایی صفحه */
+export const Positions: Story = {
+  render: () => {
+    const POSITIONS = [
+      { id: "pos-top-right", name: "top-right", label: "بالا - راست (Top Right)" },
+      { id: "pos-top-center", name: "top-center", label: "بالا - وسط (Top Center)" },
+      { id: "pos-top-left", name: "top-left", label: "بالا - چپ (Top Left)" },
+      { id: "pos-bottom-right", name: "bottom-right", label: "پایین - راست (Bottom Right)" },
+      { id: "pos-bottom-center", name: "bottom-center", label: "پایین - وسط (Bottom Center)" },
+      { id: "pos-bottom-left", name: "bottom-left", label: "پایین - چپ (Bottom Left)" },
+    ] as const;
+
+    return (
+      <div className="flex flex-col items-center gap-6 w-full max-w-3xl py-4">
+        {/* ایجاد Toaster اختصاصی برای هر کدام از ۶ موقعیت */}
+        {POSITIONS.map((p) => (
+          <Toaster
+            key={p.id}
+            id={p.id}
+            position={p.name}
+            showProgress
+          />
+        ))}
+
+        <div className="text-center">
+          <h3 className="text-base font-bold text-foreground">
+            بررسی هم‌زمان موقعیت‌های ۶‌گانه صفحه
+          </h3>
+          <p className="text-xs text-muted-foreground mt-1">
+            روی هر موقعیت در ماکت زیر کلیک کنید تا اعلان دقیقاً در همان جایگاه ظاهر شود:
+          </p>
+        </div>
+
+        {/* ماکت نمایشی صفحه برای شبیه‌سازی ۶ گوشه و مرکز */}
+        <div className="w-full border-2 border-dashed border-border rounded-2xl p-6 bg-muted/20 flex flex-col gap-8 shadow-xs">
+          {/* ردیف موقعیت‌های بالا */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <Button
+              variant="secondary"
+              onClick={() =>
+                toast.success("اعلان: بالا راست", {
+                  description: "موقعیت top-right فعال شد.",
+                  toasterId: "pos-top-right",
+                })
+              }
+            >
+              بالا - راست (Top Right)
+            </Button>
+
+            <Button
+              variant="primary"
+              onClick={() =>
+                toast.info("اعلان: بالا وسط", {
+                  description: "موقعیت پیش‌فرض top-center فعال شد.",
+                  toasterId: "pos-top-center",
+                })
+              }
+            >
+              بالا - وسط (Top Center)
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={() =>
+                toast.warning("اعلان: بالا چپ", {
+                  description: "موقعیت top-left فعال شد.",
+                  toasterId: "pos-top-left",
+                })
+              }
+            >
+              بالا - چپ (Top Left)
+            </Button>
+          </div>
+
+          <div className="text-center py-4 text-xs font-mono text-muted-foreground border-y border-dashed border-border/60">
+            [ ناحیه محتوای اصلی نرم‌افزار (Viewport Area) ]
+          </div>
+
+          {/* ردیف موقعیت‌های پایین */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <Button
+              variant="secondary"
+              onClick={() =>
+                toast.success("اعلان: پایین راست", {
+                  description: "موقعیت bottom-right فعال شد.",
+                  toasterId: "pos-bottom-right",
+                })
+              }
+            >
+              پایین - راست (Bottom Right)
+            </Button>
+
+            <Button
+              variant="primary"
+              onClick={() =>
+                toast.info("اعلان: پایین وسط", {
+                  description: "موقعیت bottom-center فعال شد.",
+                  toasterId: "pos-bottom-center",
+                })
+              }
+            >
+              پایین - وسط (Bottom Center)
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={() =>
+                toast.error("اعلان: پایین چپ", {
+                  description: "موقعیت bottom-left فعال شد.",
+                  toasterId: "pos-bottom-left",
+                })
+              }
+            >
+              پایین - چپ (Bottom Left)
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `// تنظیم موقعیت دلخواه در Toaster:
+<Toaster position="top-center" />    // پیش‌فرض
+<Toaster position="top-right" />
+<Toaster position="top-left" />
+<Toaster position="bottom-center" />
+<Toaster position="bottom-right" />
+<Toaster position="bottom-left" />`,
+        language: "tsx",
+        format: true,
+      },
+    },
+  },
 };
 
 /** استوری اختصاصی برای مقایسه رفتار پشته‌ای (Stacked vs Expanded) */
 export const StackedVsExpanded: Story = {
   args: {
     position: "bottom-right",
+    size: "default",
     expand: false,
     showProgress: true,
   },
@@ -322,6 +549,7 @@ export const StackedVsExpanded: Story = {
 export const WithActions: Story = {
   args: {
     position: "top-center",
+    size: "default",
     showProgress: true,
     expand: false,
   },

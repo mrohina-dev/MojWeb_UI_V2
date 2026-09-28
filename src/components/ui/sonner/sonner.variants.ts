@@ -1,7 +1,10 @@
 import { cva, type VariantProps } from "class-variance-authority";
 
 export const toastVariants = cva(
-  "group toast font-sans shadow-lg rounded-xl border p-4 transition-all duration-200 w-full relative overflow-hidden",
+  [
+    "group toast font-sans shadow-lg rounded-xl border p-4 transition-all duration-200 relative overflow-hidden",
+    "text-right",
+  ],
   {
     variants: {
       variant: {
@@ -16,6 +19,13 @@ export const toastVariants = cva(
         info:
           "data-[type=info]:!bg-blue-50 data-[type=info]:!text-blue-700 data-[type=info]:!border-blue-100 data-[type=info]:after:!bg-blue-500 [&_[data-button]]:!bg-blue-600 [&_[data-button]]:!text-white hover:[&_[data-button]]:!bg-blue-700",
       },
+      size: {
+        default: "!w-auto !min-w-[16rem] !max-w-[calc(100vw-2rem)] sm:!max-w-md",
+        sm: "!w-[18rem] !max-w-[calc(100vw-2rem)]",
+        md: "!w-[22rem] !max-w-[calc(100vw-2rem)]",
+        lg: "!w-[28rem] !max-w-[calc(100vw-2rem)]",
+        full: "!w-full",
+      },
       showProgress: {
         true: "toast-has-progress",
         false: "",
@@ -23,6 +33,7 @@ export const toastVariants = cva(
     },
     defaultVariants: {
       variant: "default",
+      size: "default",
       showProgress: true,
     },
   }
