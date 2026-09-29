@@ -12,7 +12,7 @@ export const userService = {
   /**
    * دریافت تصویر کپچا به صورت Base64
    */
-   getCaptcha: () => {
+  getCaptcha: () => {
     return http.get<CaptchaResponse>("/api/common/GetCaptcha");
   },
 
@@ -52,13 +52,14 @@ export const userService = {
    */
   logout: async () => {
     try {
-      // اگر بک‌اند POST است:
       await http.get<null>("/api/User/Logout", {
-        showSuccessToast: true,  
-        showErrorToast: true,    
+        showSuccessToast: true,
+        showErrorToast: true,
       });
+    } catch {
+      // خطا توسط Toast نمایش داده شده است؛ نیازی به شکستن فرآیند خروج کلاینت نیست
     } finally {
-      // حتی اگر درخواست fail شد، برای امنیت/UX معمولاً پاک‌سازی کلاینت انجام می‌شود
+      // پاک‌سازی حافظه کلاینت تحت هر شرایطی
       authStorage.clearAuthData();
     }
   },

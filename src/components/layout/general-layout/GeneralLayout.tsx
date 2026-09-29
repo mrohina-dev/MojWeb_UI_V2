@@ -28,16 +28,19 @@ export const GeneralLayout = ({ children, className }: GeneralLayoutProps) => {
     setIsLogoutDialogOpen(true);
   };
 
-  const handleConfirmLogout = async () => {
-  try {
-    setIsLoggingOut(true);
-    await userService.logout();
-    navigate(LOGIN_ROUTE, { replace: true });
-  } finally {
-    setIsLoggingOut(false);
-    setIsLogoutDialogOpen(false);
-  }
-};
+   const handleConfirmLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await userService.logout();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      setIsLoggingOut(false);
+      setIsLogoutDialogOpen(false);
+      // انتقال به لاگین تحت هر شرایطی انجام می‌شود
+      navigate(LOGIN_ROUTE, { replace: true });
+    }
+  };
 
   return (
     <div
