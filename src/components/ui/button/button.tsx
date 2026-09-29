@@ -12,12 +12,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       variant,
       size,
       iconOnly,
+      shape,
       fullWidth,
       outline = false,
       loading = false,
       disabled,
       iconStart,
       iconEnd,
+      stopPropagation = false,
+      onClick,
       children,
       type = "button",
       ...props
@@ -26,17 +29,33 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const isDisabled = disabled || loading;
 
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (stopPropagation) {
+        e.stopPropagation();
+      }
+      onClick?.(e);
+    };
+
     return (
       <BaseButton
         ref={ref}
         type={type}
         disabled={isDisabled}
+        onClick={handleClick}
         className={cn(
-          buttonVariants({ variant, size, iconOnly, fullWidth, outline, className })
+          buttonVariants({
+            variant,
+            size,
+            iconOnly,
+            shape,
+            fullWidth,
+            outline,
+            className,
+          })
         )}
         {...props}
       >
-        {/* Render logic */}
+        {/* وضعیت لودینگ */}
         {loading ? (
           <Loader2 className="animate-spin" />
         ) : (
