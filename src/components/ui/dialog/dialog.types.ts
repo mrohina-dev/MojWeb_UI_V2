@@ -3,7 +3,6 @@ import type { Dialog as BaseUIDialog } from '@base-ui/react/dialog';
 import type { VariantProps } from 'class-variance-authority';
 import type { dialogContentVariants } from './dialog.variants';
 
-// تایپ‌های کامپوننت‌های زیربنایی (Base)
 export type BaseDialogProps = React.ComponentPropsWithoutRef<typeof BaseUIDialog.Root>;
 export type DialogTriggerProps = React.ComponentPropsWithoutRef<typeof BaseUIDialog.Trigger>;
 export type DialogPortalProps = React.ComponentPropsWithoutRef<typeof BaseUIDialog.Portal>;
@@ -22,6 +21,29 @@ export interface DialogContentProps
    * @default true
    */
   showCloseButton?: boolean;
+  /**
+   * نمایش دکمه بزرگ‌نمایی / تمام‌صفحه
+   * @default false
+   */
+  showMaximizeButton?: boolean;
+  /**
+   * وضعیت تمام‌صفحه بودن (کنترل‌شده)
+   */
+  isMaximized?: boolean;
+  /**
+   * مقدار اولیه تمام‌صفحه در حالت کنترل‌نشده
+   * @default false
+   */
+  defaultMaximized?: boolean;
+  /**
+   * رویداد تغییر وضعیت تمام‌صفحه
+   */
+  onMaximizedChange?: (maximized: boolean) => void;
+  /**
+   * امکان جابه‌جا کردن دیالوگ با درگ کردن ناحیه هدر / پدینگ
+   * @default false
+   */
+  draggable?: boolean;
   /**
    * کانتینر پورتال سفارشی
    */
@@ -60,8 +82,20 @@ export interface DialogProps extends BaseDialogProps {
    * @default true
    */
   showCloseButton?: boolean;
-  /**
-   * کلاس سفارشی برای بدنه دیالوگ
+    /**
+   * نمایش دکمه تمام‌صفحه / بزرگ‌نمایی در هدر پنجره
    */
+  showMaximizeButton?: boolean;
+  /**
+   * وضعیت کنترل‌شده تمام‌صفحه بودن
+   */
+  isMaximized?: boolean;
+  defaultMaximized?: boolean;
+  onMaximizedChange?: (maximized: boolean) => void;
+  /**
+   * امکان جابه‌جایی دیالوگ با موس
+   * @default false
+   */
+  draggable?: boolean;
   contentClassName?: string;
 }

@@ -36,21 +36,6 @@ const meta: Meta<typeof Dialog> = {
         defaultValue: { summary: 'default' },
       },
     },
-    showCloseButton: {
-      control: 'boolean',
-      description: 'نمایش دکمه ضربدر بستن در گوشه بالا',
-      table: {
-        defaultValue: { summary: 'true' },
-      },
-    },
-    title: {
-      control: 'text',
-      description: 'عنوان مودال',
-    },
-    description: {
-      control: 'text',
-      description: 'توضیحات کوتاه زیر عنوان',
-    },
   },
 };
 
@@ -65,6 +50,8 @@ export const Default: Story = {
   args: {
     size: 'default',
     showCloseButton: true,
+    showMaximizeButton: false,
+    draggable: false,
     title: 'عنوان دیالوگ',
     description: 'این بخش برای توضیحات کوتاه و راهنمای کاربر استفاده می‌شود.',
   },
@@ -162,7 +149,7 @@ export const WithForm: Story = {
 
 export const Sizes: Story = {
   render: () => {
-    const sizes = ['sm', 'default', 'lg', 'xl'] as const;
+    const sizes = ['sm', 'default', 'lg', 'xl', 'full'] as const;
 
     return (
       <div className="flex flex-wrap items-center gap-3">
@@ -177,7 +164,9 @@ export const Sizes: Story = {
               <DialogClose render={<Button variant="primary">متوجه شدم</Button>} />
             }
           >
-
+            <p className="text-sm text-muted-foreground">
+              توضیحات تست ابعاد برای اندازه {size}.
+            </p>
           </Dialog>
         ))}
       </div>
@@ -186,18 +175,103 @@ export const Sizes: Story = {
 };
 
 /* -------------------------------------------------------------------------- */
-/*            ۵. ساختار منعطف و لایه‌بندی دستی (BaseDialog Compound)           */
+/*                     ۵. قابلیت بزرگ‌نمایی / تمام‌صفحه (Maximize)              */
+/* -------------------------------------------------------------------------- */
+
+export const Maximizable: Story = {
+  render: () => (
+    <Dialog
+      size="default"
+      showMaximizeButton
+      title="پیش‌نمایش سند یا گزارش"
+      description="با فشردن آیکون مربع در گوشه بالا، پنجره به حالت تمام‌صفحه درمی‌آید."
+      trigger={<Button variant="secondary" outline>باز کردن دیالوگ با قابلیت Maximize</Button>}
+      footer={
+        <DialogClose render={<Button variant="primary">بستن پنجره</Button>} />
+      }
+    >
+      <div className="space-y-3 py-2 text-sm text-muted-foreground">
+        <p>
+          این قابلیت برای مشاهده جداول داده با ستون‌های پرتعداد، ویرایشگرهای متن و کدهای طولانی ایده‌آل است.
+        </p>
+        <div className="h-48 rounded-xl border border-dashed border-border bg-muted/40 p-4 text-center flex items-center justify-center">
+          فضای نمایش اسناد، داده‌های حجیم یا محتوای قابل اسکرول
+        </div>
+      </div>
+    </Dialog>
+  ),
+};
+
+/* -------------------------------------------------------------------------- */
+/*                    ۶. قابلیت جابه‌جایی بدون تاخیر (Draggable)               */
+/* -------------------------------------------------------------------------- */
+
+export const Draggable: Story = {
+  render: () => (
+    <Dialog
+      draggable
+      size="default"
+      title="پنجره شناور و قابل جابه‌جایی"
+      description="نشانگر موس روی حاشیه و هدر به شکل Grab تغییر می‌کند؛ کلیک کرده و بکشید."
+      trigger={<Button variant="primary">باز کردن دیالوگ Draggable</Button>}
+      footer={
+        <>
+          <DialogClose render={<Button variant="secondary" outline>انصراف</Button>} />
+          <Button variant="primary">تایید</Button>
+        </>
+      }
+    >
+      <div className="space-y-3 py-2 text-sm text-muted-foreground">
+        <p>
+          این درگ با نرخ فریم مانیتور همگام بوده و بدون هیچ‌گونه لگ یا تاخیر موس اجرا می‌شود.
+        </p>
+        <div className="rounded-lg bg-muted/60 p-3 text-xs leading-5">
+          💡 متون و فرم‌های داخل دیالوگ همچنان قابل انتخاب و تایپ هستند و درگ تنها روی نواحی خالی پنجره و هدر فعال است.
+        </div>
+      </div>
+    </Dialog>
+  ),
+};
+
+/* -------------------------------------------------------------------------- */
+/*              ۷. ترکیب ماکسیمایز و جابه‌جایی (Maximize + Draggable)            */
+/* -------------------------------------------------------------------------- */
+
+export const DraggableAndMaximizable: Story = {
+  render: () => (
+    <Dialog
+      draggable
+      showMaximizeButton
+      size="lg"
+      title="پنجره چندمنظوره (شناور + تمام‌صفحه)"
+      description="می‌توانید پنجره را جابه‌جا کنید و در صورت نیاز با زدن دکمه ماکسیمایز آن را فول‌اسکرین نمایید."
+      trigger={<Button variant="secondary">دیالوگ شناور و ماکسیمایز</Button>}
+      footer={
+        <DialogClose render={<Button variant="primary">فهمیدم</Button>} />
+      }
+    >
+      <div className="space-y-3 py-2 text-sm text-muted-foreground">
+        <p>
+          هنگام رفتن به حالت تمام‌صفحه (Maximize)، درگ به طور خودکار غیرفعال و موقعیت به مرکز صفحه ریست می‌شود.
+        </p>
+      </div>
+    </Dialog>
+  ),
+};
+
+/* -------------------------------------------------------------------------- */
+/*            ۸. ساختار منعطف و لایه‌بندی دستی (BaseDialog Compound)           */
 /* -------------------------------------------------------------------------- */
 
 export const CompoundUsage: Story = {
   render: () => (
     <BaseDialog>
       <DialogTrigger render={<Button variant="ghost" outline>استفاده از BaseDialog</Button>} />
-      <DialogContent size="lg">
+      <DialogContent size="lg" draggable showMaximizeButton>
         <DialogHeader>
           <DialogTitle>کنترل جزء‌به‌جزء چیدمان</DialogTitle>
           <DialogDescription>
-            در سناریوهای چندمرحله‌ای، تب‌بندی‌ها یا چیدمان‌های بدون فوتر می‌توانید مستقیماً از اجزای BaseDialog استفاده کنید.
+            در سناریوهای چندمرحله‌ای، تب‌بندی‌ها یا چیدمان‌های سفارشی می‌توانید مستقیماً از اجزای BaseDialog استفاده کنید.
           </DialogDescription>
         </DialogHeader>
 
@@ -215,7 +289,7 @@ export const CompoundUsage: Story = {
 };
 
 /* -------------------------------------------------------------------------- */
-/*                         ۶. کنترل وضعیت باز/بسته (Controlled)               */
+/*                         ۹. کنترل وضعیت باز/بسته (Controlled)               */
 /* -------------------------------------------------------------------------- */
 
 export const Controlled: Story = {

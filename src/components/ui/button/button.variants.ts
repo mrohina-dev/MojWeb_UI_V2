@@ -25,13 +25,19 @@ export const buttonVariants = cva(
         false: "",
       },
       size: {
+        xs: "h-7 rounded-md px-2 text-xs gap-1 [&_svg]:size-3.5",
         sm: "h-8 rounded-md px-3 text-xs [&_svg]:size-3.5",
         default: "h-10 rounded-lg px-4 py-2 [&_svg]:size-4",
         lg: "h-12 rounded-lg px-6 text-base [&_svg]:size-5",
       },
       iconOnly: {
-        true: "p-0 rounded-full shrink-0",
+        true: "p-0 shrink-0",
         false: "",
+      },
+      shape: {
+        circle: "rounded-full",
+        square: "rounded-md",
+        default: "",
       },
       fullWidth: {
         true: "w-full",
@@ -39,51 +45,62 @@ export const buttonVariants = cva(
       },
     },
     compoundVariants: [
-      // تنظیم نسبت ابعاد مربعی برای دکمه‌های آیکونی در هر سایز
+      // ۱. اگر iconOnly باشد و shape مشخص نشده باشد، پیش‌فرض مثل گذشته rounded-full است
+      {
+        iconOnly: true,
+        shape: "default",
+        className: "rounded-full",
+      },
+      // ۲. تنظیم نسبت ابعاد مربعی برای دکمه‌های آیکونی در هر سایز
+      {
+        iconOnly: true,
+        size: "xs",
+        className: "w-7 h-7",
+      },
       {
         iconOnly: true,
         size: "sm",
-        class: "w-8 h-8",
+        className: "w-8 h-8",
       },
       {
         iconOnly: true,
         size: "default",
-        class: "w-10 h-10",
+        className: "w-10 h-10",
       },
       {
         iconOnly: true,
         size: "lg",
-        class: "w-12 h-12",
+        className: "w-12 h-12",
       },
-      // استایل‌های Outline با Variants
+      // ۳. استایل‌های Outline با Variants
       {
         variant: "primary",
         outline: true,
-        class:
+        className:
           "border-primary text-primary hover:bg-primary/10 active:bg-primary/20",
       },
       {
         variant: "destructive",
         outline: true,
-        class:
+        className:
           "border-destructive text-destructive hover:bg-destructive/10 active:bg-destructive/20",
       },
       {
         variant: "success",
         outline: true,
-        class:
+        className:
           "border-success-600 text-success-600 hover:bg-success-50 active:bg-success-100",
       },
       {
         variant: "warning",
         outline: true,
-        class:
+        className:
           "border-warning-500 text-warning-600 hover:bg-warning-50 active:bg-warning-100",
       },
       {
         variant: "secondary",
         outline: true,
-        class:
+        className:
           "border-border text-secondary-foreground hover:bg-accent hover:text-accent-foreground active:bg-muted",
       },
       {
@@ -103,6 +120,7 @@ export const buttonVariants = cva(
       outline: false,
       size: "default",
       iconOnly: false,
+      shape: "default",
       fullWidth: false,
     },
   }

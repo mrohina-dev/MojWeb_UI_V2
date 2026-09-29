@@ -6,7 +6,7 @@ export interface InputProps
   extends Omit<React.ComponentProps<"input">, "size">,
     VariantProps<typeof inputVariants> {
   /**
-   * برچسب ورودی
+   * برچسب ورودی در فرم‌ها
    */
   label?: string;
   /**
@@ -14,19 +14,27 @@ export interface InputProps
    */
   helperText?: string;
   /**
-   * متن خطا (مثلاً از react-hook-form و zod)
+   * متن خطای اعتبارسنجی
    */
   error?: string;
   /**
-   * نمایش آیکون یا المنت در سمت راست فیلد (در حالت RTL)
+   * نمایش آیکون در سمت راست فیلد (در حالت RTL)
    */
   iconStart?: React.ReactNode;
   /**
-   * نمایش آیکون یا المنت در سمت چپ فیلد (مانند دکمه پسورد در RTL)
+   * نمایش آیکون یا دکمه تعاملی در سمت چپ فیلد (مانند دکمه پاک کردن یا چشم رمز)
    */
   iconEnd?: React.ReactNode;
   /**
-   * کلاس اضافی برای (Wrapper)
+   * حذف Wrapper، Label و پیام‌های زیرین برای سلول‌های جدول و فیلترها
+   */
+  plain?: boolean;
+  /**
+   * استایل شبیه اکسل برای ویرایش مستقیم درون سلول‌های جدول
+   */
+  isTableInline?: boolean;
+  /**
+   * کلاس سفارشی برای Wrapper بیرونی
    */
   wrapperClassName?: string;
 }
