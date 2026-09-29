@@ -174,9 +174,14 @@ async function handleUnauthorizedFlow(
 ): Promise<AxiosResponse> {
   const isAuthEndpoint =
     originalConfig.url?.endsWith("/api/User/Login") ||
-    originalConfig.url?.endsWith("/api/User/refreshToken");
+    originalConfig.url?.endsWith("/api/User/refreshToken") ||
+    originalConfig.url?.endsWith("/api/User/Logout");
 
   if (isAuthEndpoint) {
+     // برای خروج، ریدایرکت دستی نکن چون خود کامپوننت با navigate کنترلش می‌کند
+    if (originalConfig.url?.endsWith("/api/User/Logout")) {
+      return Promise.reject(createApiError("خروج از سیستم", 1401));
+    }
     handleSessionExpired(customMessage);
     return Promise.reject(
       createApiError(
