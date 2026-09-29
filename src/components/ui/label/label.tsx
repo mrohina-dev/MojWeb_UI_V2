@@ -4,11 +4,14 @@ import { labelVariants } from "./label.variants";
 import { type LabelProps } from "./label.type";
 
 export const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
-  ({ className, disabled, hasError, required, children, ...props }, ref) => {
+  (
+    { className, size = "default", disabled, hasError, required, children, ...props },
+    ref
+  ) => {
     return (
       <label
         ref={ref}
-        className={cn(labelVariants({ disabled, hasError }), className)}
+        className={cn(labelVariants({ size, disabled, hasError }), className)}
         {...props}
       >
         {children}
