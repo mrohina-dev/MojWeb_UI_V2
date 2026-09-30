@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Collapsible as BaseCollapsible } from "@base-ui/react/collapsible";
+import { Collapsible as BaseUICollapsible } from "@base-ui/react/collapsible";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -8,33 +8,30 @@ import {
   collapsibleChevronVariants,
   collapsiblePanelVariants,
 } from "./collapsible.variants";
+import {
+  CollapsibleContext,
+  useCollapsibleContext,
+} from "./collapsible-context";
 import type {
+  BaseCollapsibleProps,
+  BaseCollapsibleTriggerProps,
+  BaseCollapsibleContentProps,
   CollapsibleProps,
-  CollapsibleTriggerProps,
-  CollapsibleContentProps,
   CollapsibleContextValue,
 } from "./collapsible.types";
 
-const CollapsibleContext = React.createContext<CollapsibleContextValue | null>(null);
+/* =========================================================================
+   Base / Compound Components
+   ========================================================================= */
 
-const useCollapsibleContext = () => {
-  const context = React.useContext(CollapsibleContext);
-  if (!context) {
-    throw new Error(
-      "Collapsible sub-components must be used within <Collapsible />"
-    );
-  }
-  return context;
-};
-
-export const Collapsible = React.forwardRef<HTMLDivElement, CollapsibleProps>(
+export const BaseCollapsible = React.forwardRef<HTMLDivElement, BaseCollapsibleProps>(
   (
     {
       size = "default",
       variant = "default",
+      divided = false,
       className,
       children,
-      divided,
       ...props
     },
     ref
@@ -50,27 +47,27 @@ export const Collapsible = React.forwardRef<HTMLDivElement, CollapsibleProps>(
 
     return (
       <CollapsibleContext.Provider value={contextValue}>
-        <BaseCollapsible.Root
+        <BaseUICollapsible.Root
           ref={ref}
           className={cn(collapsibleRootVariants({ variant }), className)}
           {...props}
         >
           {children}
-        </BaseCollapsible.Root>
+        </BaseUICollapsible.Root>
       </CollapsibleContext.Provider>
     );
   }
 );
-Collapsible.displayName = "Collapsible";
+BaseCollapsible.displayName = "BaseCollapsible";
 
-export const CollapsibleTrigger = React.forwardRef<
+export const BaseCollapsibleTrigger = React.forwardRef<
   HTMLButtonElement,
-  CollapsibleTriggerProps
+  BaseCollapsibleTriggerProps
 >(({ showChevron = true, className, children, ...props }, ref) => {
   const { size, variant } = useCollapsibleContext();
 
   return (
-    <BaseCollapsible.Trigger
+    <BaseUICollapsible.Trigger
       ref={ref}
       className={cn(
         "group/trigger",
@@ -85,25 +82,57 @@ export const CollapsibleTrigger = React.forwardRef<
       {showChevron && (
         <ChevronDown className={cn(collapsibleChevronVariants({ size }))} />
       )}
-    </BaseCollapsible.Trigger>
+    </BaseUICollapsible.Trigger>
   );
 });
-CollapsibleTrigger.displayName = "CollapsibleTrigger";
+BaseCollapsibleTrigger.displayName = "BaseCollapsibleTrigger";
 
-export const CollapsibleContent = React.forwardRef<
+export const BaseCollapsibleContent = React.forwardRef<
   HTMLDivElement,
-  CollapsibleContentProps
+  BaseCollapsibleContentProps
 >(({ className, children, ...props }, ref) => {
   const { size, divided } = useCollapsibleContext();
 
   return (
-    <BaseCollapsible.Panel
+    <BaseUICollapsible.Panel
       ref={ref}
       className={cn(collapsiblePanelVariants({ size, divided }), className)}
       {...props}
     >
       {children}
-    </BaseCollapsible.Panel>
+    </BaseUICollapsible.Panel>
   );
 });
-CollapsibleContent.displayName = "CollapsibleContent";
+BaseCollapsibleContent.displayName = "BaseCollapsibleContent";
+
+/* =========================================================================
+   Shorthand Component (نسخه یکپارچه و آماده استفاده)
+   ========================================================================= */
+
+export const Collapsible = React.forwardRef<HTMLDivElement, CollapsibleProps>(
+  (
+    {
+      title,
+      icon,
+      showChevron = true,
+      triggerProps,
+      contentProps,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <BaseCollapsible ref={ref} {...props}>
+        <BaseCollapsibleTrigger showChevron={showChevron} {...triggerProps}>
+          {icon}
+          <span>{title}</span>
+        </BaseCollapsibleTrigger>
+        <BaseCollapsibleContent {...contentProps}>
+          {children}
+        </BaseCollapsibleContent>
+      </BaseCollapsible>
+    );
+  }
+);
+Collapsible.displayName = "Collapsible";

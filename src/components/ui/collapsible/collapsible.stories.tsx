@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Settings, User, SlidersHorizontal } from "lucide-react";
+import { Settings, User, SlidersHorizontal, ShieldCheck } from "lucide-react";
 import {
   Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
+  BaseCollapsible,
+  BaseCollapsibleTrigger,
+  BaseCollapsibleContent,
 } from "./collapsible";
 
 const meta: Meta<typeof Collapsible> = {
@@ -28,6 +29,10 @@ const meta: Meta<typeof Collapsible> = {
       control: "boolean",
       description: "نمایش خط جداکننده بین عنوان و محتوا",
     },
+    showChevron: {
+      control: "boolean",
+      description: "نمایش یا عدم نمایش آیکون فلش (Chevron)",
+    },
     disabled: {
       control: "boolean",
       description: "غیرفعال کردن تعامل با کلپس",
@@ -44,27 +49,25 @@ type Story = StoryObj<typeof Collapsible>;
 
 export const Default: Story = {
   args: {
+    title: "تنظیمات پیشرفته حساب",
     variant: "default",
     size: "default",
     defaultOpen: false,
     divided: false,
+    showChevron: true,
   },
   render: (args) => (
     <div className="w-90">
       <Collapsible {...args}>
-        <CollapsibleTrigger>
-          <span>تنظیمات پیشرفته حساب</span>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          این بخش شامل گزینه‌ها و تنظیمات اختصاصی مربوط به حساب کاربری شماست که می‌توانید آن‌ها را تغییر دهید.
-        </CollapsibleContent>
+        این بخش شامل گزینه‌ها و تنظیمات اختصاصی مربوط به حساب کاربری شماست که می‌توانید آن‌ها را تغییر دهید.
       </Collapsible>
     </div>
   ),
 };
 
-export const WithDivider: Story = {
+export const WithIconAndDivider: Story = {
   args: {
+    title: "تنظیمات امنیتی و دسترسی",
     variant: "primary",
     size: "default",
     defaultOpen: true,
@@ -72,16 +75,11 @@ export const WithDivider: Story = {
   },
   render: (args) => (
     <div className="w-90">
-      <Collapsible {...args}>
-        <CollapsibleTrigger>
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal className="size-4 text-primary" />
-            <span>تنظیمات با خط جداکننده (Divided)</span>
-          </div>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          با فعال بودن پراپ divided، یک خط مرزی ملایم و استاندارد بین دکمه بازکننده و محتوای زیرین رسم می‌شود.
-        </CollapsibleContent>
+      <Collapsible
+        {...args}
+        icon={<ShieldCheck className="size-4 text-primary" />}
+      >
+        با فعال بودن پراپ divided، یک خط مرزی ملایم و مدرن بین دکمه بازکننده و محتوای زیرین رسم می‌شود.
       </Collapsible>
     </div>
   ),
@@ -100,13 +98,14 @@ export const AllVariants: Story = {
     return (
       <div className="flex w-95 flex-col gap-3">
         {variants.map((variant) => (
-          <Collapsible key={variant} variant={variant} defaultOpen={variant === "primary"}>
-            <CollapsibleTrigger>
-              <span className="capitalize font-semibold">واریانت: {variant}</span>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              محتوای نمونه برای بررسی رفتار و رنگ‌بندی واریانت {variant}.
-            </CollapsibleContent>
+          <Collapsible
+            key={variant}
+            variant={variant}
+            title={`واریانت: ${variant}`}
+            defaultOpen={variant === "primary"}
+            divided
+          >
+            محتوای نمونه جهت بررسی رفتار رنگی و استایل‌های واریانت {variant}.
           </Collapsible>
         ))}
       </div>
@@ -121,18 +120,38 @@ export const AllSizes: Story = {
     return (
       <div className="flex w-95 flex-col gap-3">
         {sizes.map((size) => (
-          <Collapsible key={size} size={size} variant="primary">
-            <CollapsibleTrigger>
-              <span>سایز کامپوننت ({size})</span>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              متن محتوا متناسب با سایز انتخاب شده تنظیم شده است.
-            </CollapsibleContent>
+          <Collapsible
+            key={size}
+            size={size}
+            variant="primary"
+            title={`سایز کامپوننت (${size})`}
+            icon={<SlidersHorizontal className="size-4 text-primary" />}
+          >
+            متن محتوا متناسب با سایز انتخاب شده تنظیم شده است.
           </Collapsible>
         ))}
       </div>
     );
   },
+};
+
+export const BaseCompoundExample: Story = {
+  name: "Compound Usage (BaseCollapsible)",
+  render: () => (
+    <div className="w-95">
+      <BaseCollapsible variant="secondary" divided>
+        <BaseCollapsibleTrigger>
+          <div className="flex items-center gap-2">
+            <Settings className="size-4" />
+            <span className="font-semibold">استفاده به شیوه ترکیبی (Compound)</span>
+          </div>
+        </BaseCollapsibleTrigger>
+        <BaseCollapsibleContent>
+          در این حالت می‌توانید هر المان یا دکمه اکشن دلخواهی را مستقیماً داخل تریگر یا بدنه قرار دهید و کنترل کامل ساختار HTML را در دست بگیرید.
+        </BaseCollapsibleContent>
+      </BaseCollapsible>
+    </div>
+  ),
 };
 
 export const InSidebarNavigation: Story = {
@@ -141,14 +160,13 @@ export const InSidebarNavigation: Story = {
       <div className="mb-2 px-2 text-xs font-semibold text-muted-foreground">
         ناوبری سایدبار
       </div>
-      <Collapsible variant="ghost" size="sm">
-        <CollapsibleTrigger>
-          <div className="flex items-center gap-2">
-            <User className="size-4" />
-            <span>مدیریت کاربران</span>
-          </div>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
+      <div className="flex flex-col gap-1">
+        <Collapsible
+          variant="ghost"
+          size="sm"
+          title="مدیریت کاربران"
+          icon={<User className="size-4" />}
+        >
           <div className="flex flex-col gap-1 pr-6 pt-1 text-xs">
             <a
               href="#"
@@ -163,17 +181,14 @@ export const InSidebarNavigation: Story = {
               سطوح دسترسی
             </a>
           </div>
-        </CollapsibleContent>
-      </Collapsible>
+        </Collapsible>
 
-      <Collapsible variant="ghost" size="sm">
-        <CollapsibleTrigger>
-          <div className="flex items-center gap-2">
-            <Settings className="size-4" />
-            <span>پیکربندی سیستم</span>
-          </div>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
+        <Collapsible
+          variant="ghost"
+          size="sm"
+          title="پیکربندی سیستم"
+          icon={<Settings className="size-4" />}
+        >
           <div className="flex flex-col gap-1 pr-6 pt-1 text-xs">
             <a
               href="#"
@@ -188,8 +203,8 @@ export const InSidebarNavigation: Story = {
               گزارش لاگ‌ها
             </a>
           </div>
-        </CollapsibleContent>
-      </Collapsible>
+        </Collapsible>
+      </div>
     </div>
   ),
 };
