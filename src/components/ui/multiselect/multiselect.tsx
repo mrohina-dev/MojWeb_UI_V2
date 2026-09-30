@@ -5,6 +5,7 @@ import { ChevronDown, Loader2, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Label } from "../label";
 import { Input } from "../input";
+import { Button } from "../button";
 import Checkbox from "../checkbox/checkbox";
 import {
   multiSelectItemVariants,
@@ -18,8 +19,6 @@ import type {
   SimplifiedMultiSelectProps,
 } from "./multiselect.types";
 import type { ComponentSize } from "@/types/ui.types";
-
-const MultiSelectSizeContext = React.createContext<ComponentSize>("default");
 
 function isOptionGroup(
   item: MultiSelectOption | MultiSelectOptionGroup
@@ -166,7 +165,6 @@ export const MultiSelect = React.forwardRef<
 
     const [isOpen, setIsOpen] = React.useState(false);
 
-    // search state
     const [rawQuery, setRawQuery] = React.useState("");
     const [debouncedQuery, setDebouncedQuery] = React.useState("");
     const searchInputRef = React.useRef<HTMLInputElement>(null);
@@ -174,7 +172,6 @@ export const MultiSelect = React.forwardRef<
     const isEffectivelyDisabled = Boolean(disabled || isLoading);
     const hasError = Boolean(error);
 
-    // value state (controlled/uncontrolled)
     const isControlled = value != null;
     const [uncontrolled, setUncontrolled] = React.useState<string[]>(
       uniq(defaultValue ?? [])
@@ -219,7 +216,6 @@ export const MultiSelect = React.forwardRef<
       return selectedValues.map((v) => labelMap.get(v) ?? v);
     }, [selectedValues, labelMap]);
 
-    // جداسازی لیبل‌های نمایشی و شمارنده باقی‌مانده‌ها برای حفظ ترتیب RTL
     const { visibleLabels, remainingCount } = React.useMemo(() => {
       if (selectedLabels.length === 0) {
         return { visibleLabels: [], remainingCount: 0 };
@@ -244,7 +240,6 @@ export const MultiSelect = React.forwardRef<
       }
     }, [isOpen, searchable]);
 
-    // انطباق سایزهای فرعی با سیستم سایزبندی ۴ تایی
     const internalFormSize = size === "lg" ? "default" : size === "xs" ? "xs" : "sm";
 
     const onToggle = (v: string) => {
@@ -314,125 +309,126 @@ export const MultiSelect = React.forwardRef<
           </Label>
         )}
 
-        <MultiSelectSizeContext.Provider value={size}>
-          <PopoverPrimitive.Root open={isOpen} onOpenChange={handleOpenChange}>
-            {name ? (
-              <input type="hidden" name={name} value={selectedValues.join(",")} />
-            ) : null}
+        <PopoverPrimitive.Root open={isOpen} onOpenChange={handleOpenChange}>
+          {name ? (
+            <input type="hidden" name={name} value={selectedValues.join(",")} />
+          ) : null}
 
-            <PopoverPrimitive.Trigger
-              ref={ref}
-              id={selectId}
-              disabled={isEffectivelyDisabled}
-              aria-invalid={hasError ? true : undefined}
-              aria-describedby={hasError ? errorId : helperText ? helperId : undefined}
-              className={cn(
-                multiSelectTriggerVariants({
-                  size,
-                  hasError,
-                  fullWidth,
-                }),
-                className
-              )}
-            >
-              <div className="flex items-center gap-1.5 truncate">
-                {iconStart ? (
-                  <span className="size-4 shrink-0 text-muted-foreground flex items-center justify-center">
-                    {iconStart}
-                  </span>
-                ) : null}
+          {/* Trigger استاندارد و ساده Popover بدون پیچیدگی و اورلپ */}
+          <PopoverPrimitive.Trigger
+            ref={ref}
+            id={selectId}
+            disabled={isEffectivelyDisabled}
+            aria-invalid={hasError ? true : undefined}
+            aria-describedby={hasError ? errorId : helperText ? helperId : undefined}
+            className={cn(
+              multiSelectTriggerVariants({
+                size,
+                hasError,
+                fullWidth,
+              }),
+              className
+            )}
+          >
+            <div className="flex items-center gap-1.5 truncate">
+              {iconStart ? (
+                <span className="size-4 shrink-0 text-muted-foreground flex items-center justify-center">
+                  {iconStart}
+                </span>
+              ) : null}
 
-                {selectedLabels.length === 0 ? (
-                  <span className="truncate text-start text-muted-foreground">
-                    {placeholder}
+              {selectedLabels.length === 0 ? (
+                <span className="truncate text-start text-muted-foreground">
+                  {placeholder}
+                </span>
+              ) : (
+                <>
+                  <span className="truncate text-start">
+                    {visibleLabels.join("، ")}
                   </span>
-                ) : (
-                  <>
-                    <span className="truncate text-start">
-                      {visibleLabels.join("، ")}
+
+                  {remainingCount > 0 && (
+                    <span
+                      dir="ltr"
+                      className="inline-flex shrink-0 items-center justify-center rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground"
+                    >
+                      +{remainingCount}
                     </span>
+                  )}
+                </>
+              )}
+            </div>
 
-                    {remainingCount > 0 && (
-                      <span
-                        dir="ltr"
-                        className="inline-flex shrink-0 items-center justify-center rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground"
-                      >
-                        +{remainingCount}
-                      </span>
-                    )}
-                  </>
-                )}
-              </div>
+            <div className="flex items-center gap-1 shrink-0">
+              {/* فقط دکمه Clear با استفاده از Button خودمان، ساده و تمیز */}
+              {showClearButton && selectedValues.length > 0 && !isEffectivelyDisabled ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="xs"
+                  shape="circle"
+                  iconOnly
+                  stopPropagation
+                  onClick={onClear}
+                  aria-label="پاک کردن انتخاب‌ها"
+                  className="size-5 text-muted-foreground hover:text-foreground hover:bg-muted/80 p-0"
+                >
+                  <X className="size-3" />
+                </Button>
+              ) : null}
 
-              <div className="flex items-center gap-2 shrink-0">
-                {showClearButton && selectedValues.length > 0 && !isEffectivelyDisabled ? (
-                  <button
-                    type="button"
-                    className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      onClear();
-                    }}
-                    aria-label="پاک کردن انتخاب‌ها"
-                  >
-                    <X className="size-4" />
-                  </button>
+              {isLoading ? (
+                <Loader2 className="size-4 shrink-0 animate-spin text-muted-foreground" />
+              ) : (
+                <span className="text-muted-foreground transition-transform duration-200 group-data-popup-open:rotate-180 shrink-0">
+                  <ChevronDown className="size-4" />
+                </span>
+              )}
+            </div>
+          </PopoverPrimitive.Trigger>
+
+          <PopoverPrimitive.Portal>
+            <PopoverPrimitive.Positioner
+              side="bottom"
+              sideOffset={4}
+              className="z-50 select-none outline-none"
+            >
+              <PopoverPrimitive.Popup
+                className={cn(multiSelectPopupVariants({ size }), maxPopupHeightClass)}
+              >
+                {searchable ? (
+                  <div className="p-1.5 border-b border-border/80 sticky top-0 bg-popover z-10">
+                    <Input
+                      ref={searchInputRef}
+                      value={rawQuery}
+                      onChange={(e) => setRawQuery(e.target.value)}
+                      placeholder={searchPlaceholder}
+                      size={internalFormSize}
+                      iconStart={<Search className="size-3.5" />}
+                      className="bg-muted/30 focus-visible:bg-background"
+                      onKeyDown={(e) => e.stopPropagation()}
+                    />
+                  </div>
                 ) : null}
 
-                {isLoading ? (
-                  <Loader2 className="size-4 shrink-0 animate-spin text-muted-foreground" />
-                ) : (
-                  <span className="text-muted-foreground transition-transform duration-200 group-data-popup-open:rotate-180 shrink-0">
-                    <ChevronDown className="size-4" />
-                  </span>
-                )}
-              </div>
-            </PopoverPrimitive.Trigger>
-
-            <PopoverPrimitive.Portal>
-              <PopoverPrimitive.Positioner
-                side="bottom"
-                sideOffset={4}
-                className="z-50 select-none outline-none"
-              >
-                <PopoverPrimitive.Popup
-                  className={cn(multiSelectPopupVariants({ size }), maxPopupHeightClass)}
-                >
-                  {searchable ? (
-                    <div className="p-1.5 border-b border-border/80 sticky top-0 bg-popover z-10">
-                      <Input
-                        ref={searchInputRef}
-                        value={rawQuery}
-                        onChange={(e) => setRawQuery(e.target.value)}
-                        placeholder={searchPlaceholder}
-                        size={internalFormSize}
-                        iconStart={<Search className="size-3.5" />}
-                        className="bg-muted/30 focus-visible:bg-background"
-                        onKeyDown={(e) => e.stopPropagation()}
-                      />
+                <div className="p-1 overflow-y-auto flex-1">
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2 py-6 text-xs text-muted-foreground select-none">
+                      <Loader2 className="size-4 animate-spin text-primary" />
+                      <span>{loadingText}</span>
                     </div>
-                  ) : null}
-
-                  <div className="p-1 overflow-y-auto flex-1">
-                    {isLoading ? (
-                      <div className="flex items-center justify-center gap-2 py-6 text-xs text-muted-foreground select-none">
-                        <Loader2 className="size-4 animate-spin text-primary" />
-                        <span>{loadingText}</span>
-                      </div>
-                    ) : filteredOptions.length === 0 ? (
-                      <div className="py-4 px-2 text-center text-xs text-muted-foreground select-none">
-                        {emptyText}
-                      </div>
-                    ) : (
-                      renderOptions(filteredOptions)
-                    )}
-                  </div>
-                </PopoverPrimitive.Popup>
-              </PopoverPrimitive.Positioner>
-            </PopoverPrimitive.Portal>
-          </PopoverPrimitive.Root>
-        </MultiSelectSizeContext.Provider>
+                  ) : filteredOptions.length === 0 ? (
+                    <div className="py-4 px-2 text-center text-xs text-muted-foreground select-none">
+                      {emptyText}
+                    </div>
+                  ) : (
+                    renderOptions(filteredOptions)
+                  )}
+                </div>
+              </PopoverPrimitive.Popup>
+            </PopoverPrimitive.Positioner>
+          </PopoverPrimitive.Portal>
+        </PopoverPrimitive.Root>
 
         {hasError ? (
           <p
