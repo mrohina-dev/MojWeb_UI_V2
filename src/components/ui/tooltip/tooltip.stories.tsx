@@ -1,10 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import {
-  AlertTriangle,
-  CheckCircle2,
-  Info,
-  Sparkles,
-} from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Info, Sparkles } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -50,8 +45,12 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['sm', 'default', 'lg'],
-      description: 'سایز پدینگ و تایپوگرافی',
+      options: ['sm', 'default', 'lg', 'xl', 'full'],
+      description: 'سایز پدینگ/تایپوگرافی و محدودیت عرض تولتیپ',
+      table: {
+        type: { summary: "'sm' | 'default' | 'lg' | 'xl' | 'full'" },
+        defaultValue: { summary: 'default' },
+      },
     },
     sideOffset: {
       control: { type: 'number', min: 0, max: 24, step: 2 },
@@ -168,7 +167,11 @@ export const Variants: Story = {
         </Button>
       </SimpleTooltip>
 
-      <SimpleTooltip content="هشدار: این عملیات غیرقابل بازگشت است (Destructive)" variant="destructive" showArrow>
+      <SimpleTooltip
+        content="هشدار: این عملیات غیرقابل بازگشت است (Destructive)"
+        variant="destructive"
+        showArrow
+      >
         <Button variant="destructive" outline iconStart={<AlertTriangle className="size-4" />}>
           خطا (Destructive)
         </Button>
@@ -198,11 +201,52 @@ export const Sizes: Story = {
           بزرگ (lg)
         </Button>
       </SimpleTooltip>
+
+      <SimpleTooltip content="اندازه خیلی بزرگ (XL)" size="xl" showArrow>
+        <Button size="lg" variant="secondary" outline>
+          خیلی بزرگ (xl)
+        </Button>
+      </SimpleTooltip>
+
+      <SimpleTooltip content="تمام‌عرض (Full)" size="full" showArrow>
+        <Button className="w-64" variant="secondary" outline>
+          تمام‌عرض (full)
+        </Button>
+      </SimpleTooltip>
     </div>
   ),
 };
 
+// ۵. استفاده برای سایدبار جمع‌شده (Collapsed / Rail Mode)
+export const SidebarCollapsed: Story = {
+  render: () => (
+    <div className="flex items-center justify-center gap-3 rounded-xl border border-border bg-card p-4">
+      <SimpleTooltip content="داشبورد" side="left" sideOffset={10} showArrow>
+        <Button variant="secondary" outline iconOnly aria-label="داشبورد">
+          <Info className="size-4" />
+        </Button>
+      </SimpleTooltip>
 
+      <SimpleTooltip content="تأیید عملیات" side="left" sideOffset={10} showArrow variant="success">
+        <Button variant="secondary" outline iconOnly aria-label="تأیید عملیات">
+          <CheckCircle2 className="size-4" />
+        </Button>
+      </SimpleTooltip>
+
+      <SimpleTooltip
+        content="هشدار سیستم"
+        side="left"
+        sideOffset={10}
+        showArrow
+        variant="destructive"
+      >
+        <Button variant="secondary" outline iconOnly aria-label="هشدار سیستم">
+          <AlertTriangle className="size-4" />
+        </Button>
+      </SimpleTooltip>
+    </div>
+  ),
+};
 
 // ۶. محتوای غنی با فونت فارسی (Rich Content)
 export const RichContent: Story = {
@@ -217,14 +261,13 @@ export const RichContent: Story = {
             <span>ویژگی شخصی سازی متن</span>
           </div>
           <p className="text-[11px] leading-relaxed text-muted-foreground">
-            با نوشتن کد react.node خود در پراپرتی content
+            با نوشتن کد ReactNode داخل پراپرتی <code className="px-1">content</code> می‌توانید
+            محتوای سفارشی نمایش دهید.
           </p>
         </div>
       }
     >
-      <Button variant="primary">
-        قابلیت شخصی سازی متن 
-      </Button>
+      <Button variant="primary">قابلیت شخصی سازی متن</Button>
     </SimpleTooltip>
   ),
 };
@@ -236,16 +279,19 @@ export const AdvancedPrimitives: Story = {
       <Tooltip>
         <TooltipTrigger
           render={
-            <Button
-              variant="secondary"
-              outline
-              iconStart={<Info className="size-4" />}
-            >
+            <Button variant="secondary" outline iconStart={<Info className="size-4" />}>
               استفاده مستقیم از Primitive
             </Button>
           }
         />
-        <TooltipContent side="right" align="center" alignOffset={4} variant="info" showArrow>
+        <TooltipContent
+          side="right"
+          align="center"
+          alignOffset={4}
+          variant="info"
+          size="default"
+          showArrow
+        >
           پیاده‌سازی سفارشی با کامپوننت‌های پایه
         </TooltipContent>
       </Tooltip>
