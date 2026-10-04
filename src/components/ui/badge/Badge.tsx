@@ -1,50 +1,75 @@
+import * as React from 'react';
 import { cn } from '@/lib/utils';
-import type { BadgeProps } from './Badge.types';
+import type { BadgeProps, BadgeSize } from './Badge.types';
 import { badgeVariants } from './Badge.variants';
 
-const Badge = ({
-  children,
-  count,
-  maxCount = 99,
-  showZero = false,
-  variant,
-  size,
-  placement,
-  className,
-  ...props
-}: BadgeProps) => {
-  // اگر پراپ count پاس داده شده باشد، رفتار کامپوننت به شکل شمارنده تنظیم می‌شود
-  const isCounter = typeof count === 'number';
+export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
+  (
+    {
+      children,
+      count,
+      maxCount = 99,
+      showZero = false,
+      dot = false,
+      variant,
+      size,
+      placement,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const isCounter = typeof count === 'number';
 
-  if (isCounter && count <= 0 && !showZero) {
-    return null;
+    // عدم رندر وقتی مقدار صفر است و showZero فالس باشد
+    if (!dot && isCounter && count <= 0 && !showZero) {
+      return null;
+    }
+
+    // اولویت‌بندی سایز: dot > size پاس داده شده > حالت پیش‌فرض بر اساس شمارنده/متن
+    const resolvedSize: BadgeSize = dot
+      ? 'dot'
+      : (size ?? (isCounter ? 'counter' : 'default'));
+
+    const renderContent = () => {
+      if (dot) {
+        return null;
+      }
+
+      if (isCounter) {
+        if (count > maxCount) {
+          return (
+            <span dir="ltr" className="inline-flex items-center">
+              <span>{maxCount}</span>
+              <span>+</span>
+            </span>
+          );
+        }
+        return count;
+      }
+
+      return children;
+    };
+
+    return (
+      <span
+        ref={ref}
+        className={cn(
+          badgeVariants({
+            variant,
+            size: resolvedSize,
+            placement,
+          }),
+          className
+        )}
+        {...props}
+      >
+        {renderContent()}
+      </span>
+    );
   }
+);
 
-  // محاسبه متن شمارنده در صورت نیاز
-  const content = isCounter
-    ? count > maxCount
-      ? `+${maxCount}`
-      : count
-    : children;
+Badge.displayName = 'Badge';
 
-  // اگر کاربر صراحتاً سایز نداده باشد و شمارنده باشد، از سایز counter استفاده می‌کنیم
-  const resolvedSize = size ?? (isCounter ? 'counter' : 'default');
-
-  return (
-    <span
-      className={cn(
-        badgeVariants({
-          variant,
-          size: resolvedSize,
-          placement,
-        }),
-        className
-      )}
-      {...props}
-    >
-      {content}
-    </span>
-  );
-};
-
-export default Badge
+export default Badge;
