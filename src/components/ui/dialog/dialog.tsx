@@ -204,7 +204,7 @@ export const DialogContent = React.forwardRef<
             draggable && !isMax && [
               'cursor-grab select-none',
               // در حین درگ، transition کامپوننت صفر می‌شود تا موس جلو نزند
-              isDragging && '!transition-none cursor-grabbing will-change-transform',
+              isDragging && 'transition-none! cursor-grabbing will-change-transform',
             ],
             className
           )}
