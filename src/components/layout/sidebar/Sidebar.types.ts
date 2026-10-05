@@ -1,58 +1,70 @@
-// src/components/ui/sidebar/Sidebar.types.ts
 import * as React from 'react';
 
 export type SidebarState = 'expanded' | 'collapsed';
+export type SidebarVariant = 'default' | 'primary';
+export type SidebarCollapseMode = 'mini' | 'hidden';
 
 export interface SidebarContextValue {
-  /**
-   * وضعیت فعلی نمایش سایدبار در دسکتاپ
-   */
   state: SidebarState;
-  /**
-   * آیا سایدبار در حالت جمع‌شده (آیکون‌اونلی) است؟
-   */
   isCollapsed: boolean;
-  /**
-   * تغییر مستقیم وضعیت جمع‌شدن سایدبار در دسکتاپ
-   */
   setIsCollapsed: (value: boolean | ((prev: boolean) => boolean)) => void;
-  /**
-   * آیا منوی موبایل (دراور) باز است؟
-   */
   isMobileOpen: boolean;
-  /**
-   * تغییر وضعیت باز/بسته بودن منوی موبایل
-   */
-  setIsMobileOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
-  /**
-   * آیا سایز صفحه جاری موبایل است؟ (< 768px)
-   */
+  setIsMobileOpen: (value: boolean | ((prev: boolean) => boolean)) => void;
   isMobile: boolean;
-  /**
-   * تاگل هوشمند سایدبار (تغییر دسکتاپ یا موبایل بسته به ابعاد صفحه)
-   */
   toggleSidebar: () => void;
+  collapseMode: SidebarCollapseMode;
 }
 
 export interface SidebarProviderProps {
-  /**
-   * وضعیت اولیه سایدبار در دسکتاپ (پیش‌فرض: false)
-   */
   defaultCollapsed?: boolean;
-  /**
-   * کنترل وضعیت سایدبار به صورت Controlled از بیرون
-   */
   isCollapsed?: boolean;
-  /**
-   * کال‌بک هنگام تغییر وضعیت جمع‌شدن
-   */
   onCollapsedChange?: (collapsed: boolean) => void;
-  /**
-   * کلید ذخیره‌سازی وضعیت سایدبار در localStorage (در صورت ارسال، وضعیت در مرورگر ماندگار می‌شود)
-   */
+  collapseMode?: SidebarCollapseMode;
   storageKey?: string;
-  /**
-   * کامپوننت‌های فرزند
-   */
   children: React.ReactNode;
+}
+
+export interface SidebarNavItem {
+  id: string;
+  title: string;
+  icon?: React.ReactNode;
+  path?: string;
+  badge?: string | number | React.ReactNode;
+  badgeVariant?:
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'destructive'
+    | 'outline'
+    | 'primary-subtle'
+    | 'secondary-subtle';
+  disabled?: boolean;
+  children?: SidebarNavItem[];
+}
+
+export interface SidebarNavGroup {
+  id: string;
+  title?: string;
+  items: SidebarNavItem[];
+}
+
+export interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
+  variant?: SidebarVariant;
+  collapseMode?: SidebarCollapseMode;
+  /** کنترل نمایش دکمه تاگل داخلی سایدبار */
+  showToggle?: boolean;
+  headerTitle?: string;
+  headerIcon?: React.ReactNode;
+  headerExtra?: React.ReactNode;
+  footer?: React.ReactNode;
+  groups?: SidebarNavGroup[];
+  currentPath?: string;
+  onNavigate?: (item: SidebarNavItem) => void;
+}
+
+export interface SidebarToggleProps {
+  className?: string;
+  onClick?: () => void;
+  variant?: 'default' | 'menu';
 }
