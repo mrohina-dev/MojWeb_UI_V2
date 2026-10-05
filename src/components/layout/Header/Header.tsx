@@ -6,6 +6,7 @@ import { ThemeToggle } from '@/components/common/theme-toggle/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import Badge from '@/components/ui/badge';
 import { SimpleTooltip } from '@/components/ui/tooltip';
+import { SidebarToggle } from '@/components/layout/sidebar/SidebarToggle';
 
 import type { HeaderProps } from './Header.types';
 import {
@@ -18,17 +19,27 @@ import {
 
 const Header = ({
   variant = 'default',
+  showSidebarToggle = false,
   unreadNotificationsCount = 0,
   unreadMessagesCount = 0,
   className,
+  onSidebarToggle,
   onNotificationsClick,
   onMessagesClick,
   onLogout,
 }: HeaderProps) => {
   return (
     <header className={cn(headerVariants({ variant }), className)}>
-      {/* برندینگ و لوگو */}
-      <div className="flex items-center gap-3">
+      {/* برندینگ، لوگو و دکمه تاگل سایدبار */}
+      <div className="flex items-center gap-2 md:gap-3">
+        {showSidebarToggle && (
+          <SidebarToggle
+            variant="menu" // در هدر همیشه حس «منو» را می‌دهد
+            className={headerActionButtonVariants({ variant })}
+            onClick={onSidebarToggle}
+          />
+        )}
+
         <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-white p-1 shadow-xs ring-1 ring-black/5 dark:ring-white/10">
           <img
             src={logoImg}
@@ -59,7 +70,7 @@ const Header = ({
             <Badge
               count={unreadNotificationsCount}
               variant="destructive"
-              placement="top-left"
+              placement="top-end"
             />
           </Button>
         </SimpleTooltip>
@@ -77,7 +88,7 @@ const Header = ({
             <Badge
               count={unreadMessagesCount}
               variant="info"
-              placement="top-left"
+              placement="top-end"
             />
           </Button>
         </SimpleTooltip>
@@ -102,4 +113,4 @@ const Header = ({
   );
 };
 
-export default Header
+export default Header;
