@@ -1,4 +1,3 @@
-// src/components/ui/table/table.tsx
 import * as React from "react";
 import { ArrowUpDown, ArrowUp, ArrowDown, Inbox } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -28,9 +27,10 @@ export function Table<T extends Record<string, unknown>>({
     emptyText,
 
     // Table Variants Props
-    density,
-    bordered,
-    striped,
+    variant = "default",
+    density = "default",
+    bordered = true,
+    striped = false,
 
     // Row Indexing
     showRowIndex = false,
@@ -323,9 +323,9 @@ export function Table<T extends Record<string, unknown>>({
 
     return (
         <div className={cn("w-full flex flex-col gap-2", className)} {...props}>
-            <TableContainer>
+            <TableContainer variant={variant}>
                 <TableScrollWrapper style={{ maxHeight }}>
-                    <table className={cn(tableVariants({ density, bordered, striped }))}>
+                    <table className={cn(tableVariants({ variant, density, bordered, striped }))}>
                         <TableHeader sticky={stickyHeader}>
                             <TableRow className="group">
                                 {/* 1. Selection Header */}
@@ -504,6 +504,7 @@ export function Table<T extends Record<string, unknown>>({
             {/* Pagination */}
             {pagination && (
                 <TablePagination
+                    variant={variant}
                     pageIndex={currentPageIndex}
                     pageSize={currentPageSize}
                     pageSizeOptions={pageSizeOptions}

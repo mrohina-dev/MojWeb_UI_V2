@@ -255,7 +255,7 @@ const meta: Meta<typeof Table<UserItem>> = {
         component: `
 ### کامپوننت جامع جدول داده‌ها (Data Table)
 
-کامپوننت جدول بر اساس استانداردهای دیزاین سیستم، پشتیبانی کامل از **راست‌چین (RTL)**، فونت **وزیرمتن**، متغیرهای رنگی **OKLCH**، فیلتر ترکیبی، مرتب‌سازی، لودینگ اسکلتی، انتخاب ردیف‌ها و صفحه‌بندی هوشمند کلاینت و سرور طراحی شده است.
+کامپوننت جدول بر اساس استانداردهای دیزاین سیستم، پشتیبانی کامل از **راست‌چین (RTL)**، فونت **وزیرمتن**، متغیرهای رنگی **OKLCH**، تم‌های رنگی متنوع (\`variant\`)، فیلتر ترکیبی، مرتب‌سازی، لودینگ اسکلتی، انتخاب ردیف‌ها و صفحه‌بندی هوشمند کلاینت و سرور طراحی شده است.
 
 ---
 
@@ -311,6 +311,14 @@ const columns: TableColumn<UserItem>[] = [
     },
   },
   argTypes: {
+    variant: {
+      control: "select",
+      options: ["default", "lightPrimary", "secondary", "ghost", "primary"],
+      description: "تم رنگی و استایل جدول",
+      table: {
+        defaultValue: { summary: "default" },
+      },
+    },
     density: {
       control: "inline-radio",
       options: ["compact", "default", "relaxed"],
@@ -321,7 +329,7 @@ const columns: TableColumn<UserItem>[] = [
     },
     bordered: {
       control: "boolean",
-      description: "نمایش کادر پیرامونی جدول",
+      description: "نمایش خطوط جداکننده افقی سلول‌ها",
       table: {
         defaultValue: { summary: "true" },
       },
@@ -380,6 +388,7 @@ const columns: TableColumn<UserItem>[] = [
     data: mockUsers,
     columns: defaultColumns,
     rowKey: "id",
+    variant: "default",
     density: "default",
     bordered: true,
     striped: false,
@@ -406,7 +415,92 @@ export const Default: Story = {
 };
 
 // -----------------------------------------------------------------------------
-// 2. صفحه‌بندی خودکار (Pagination - Uncontrolled)
+// 2. واریانت‌های رنگی (Color Scheme Variants)
+// -----------------------------------------------------------------------------
+export const ColorVariants: Story = {
+  name: "Color Variants",
+  render: (args) => (
+    <div className="w-full max-w-5xl mx-auto p-4 space-y-8 bg-background">
+      <div className="space-y-2">
+        <div className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+          پیش‌فرض خنثی (Default)
+        </div>
+        <Table<UserItem>
+          {...args}
+          variant="default"
+          selectable
+          pagination
+          defaultPageSize={3}
+          pageSizeOptions={[3, 5]}
+          data={mockUsers.slice(0, 5)}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div className="text-xs font-bold text-primary uppercase tracking-wide">
+          پرایمری (Primary)
+        </div>
+        <Table<UserItem>
+          {...args}
+          variant="primary"
+          selectable
+          pagination
+          defaultPageSize={3}
+          pageSizeOptions={[3, 5]}
+          data={mockUsers.slice(0, 5)}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div className="text-xs font-bold text-primary uppercase tracking-wide">
+          پرایمری روشن (Light Primary)
+        </div>
+        <Table<UserItem>
+          {...args}
+          variant="lightPrimary"
+          selectable
+          pagination
+          defaultPageSize={3}
+          pageSizeOptions={[3, 5]}
+          data={mockUsers.slice(0, 5)}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div className="text-xs font-bold text-secondary-foreground uppercase tracking-wide">
+          ثانویه (Secondary)
+        </div>
+        <Table<UserItem>
+          {...args}
+          variant="secondary"
+          selectable
+          pagination
+          defaultPageSize={3}
+          pageSizeOptions={[3, 5]}
+          data={mockUsers.slice(0, 5)}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+          گوست بدون بوردر احاطه‌کننده (Ghost)
+        </div>
+        <Table<UserItem>
+          {...args}
+          variant="ghost"
+          selectable
+          pagination
+          defaultPageSize={3}
+          pageSizeOptions={[3, 5]}
+          data={mockUsers.slice(0, 5)}
+        />
+      </div>
+    </div>
+  ),
+};
+
+// -----------------------------------------------------------------------------
+// 3. صفحه‌بندی خودکار (Pagination - Uncontrolled)
 // -----------------------------------------------------------------------------
 export const PaginationUncontrolled: Story = {
   name: "Pagination (Uncontrolled)",
@@ -435,7 +529,7 @@ export const PaginationUncontrolled: Story = {
 };
 
 // -----------------------------------------------------------------------------
-// 3. صفحه‌بندی تحت کنترل (Pagination - Controlled)
+// 4. صفحه‌بندی تحت کنترل (Pagination - Controlled)
 // -----------------------------------------------------------------------------
 function ControlledPaginationComponent(args: React.ComponentProps<typeof Table<UserItem>>) {
   const [currentPage, setCurrentPage] = React.useState<number>(1);
@@ -483,7 +577,7 @@ export const PaginationControlled: Story = {
 };
 
 // -----------------------------------------------------------------------------
-// 4. انتخاب تکی سطر (Single Select)
+// 5. انتخاب تکی سطر (Single Select)
 // -----------------------------------------------------------------------------
 function SingleSelectionComponent(args: React.ComponentProps<typeof Table<UserItem>>) {
   const [selectedKeys, setSelectedKeys] = React.useState<(string | number)[]>(["usr-2"]);
@@ -523,7 +617,7 @@ export const SingleSelection: Story = {
 };
 
 // -----------------------------------------------------------------------------
-// 5. انتخاب گروهی سطرها (Multi Select)
+// 6. انتخاب گروهی سطرها (Multi Select)
 // -----------------------------------------------------------------------------
 function MultiSelectionComponent(args: React.ComponentProps<typeof Table<UserItem>>) {
   const [selectedKeys, setSelectedKeys] = React.useState<(string | number)[]>(["usr-2", "usr-3"]);
@@ -563,7 +657,7 @@ export const MultiSelection: Story = {
 };
 
 // -----------------------------------------------------------------------------
-// 6. تعاملی کامل (Full Featured)
+// 7. تعاملی کامل (Full Featured)
 // -----------------------------------------------------------------------------
 function FullFeaturedComponent(args: React.ComponentProps<typeof Table<UserItem>>) {
   const [selectedKeys, setSelectedKeys] = React.useState<(string | number)[]>(["usr-1"]);
@@ -574,7 +668,7 @@ function FullFeaturedComponent(args: React.ComponentProps<typeof Table<UserItem>
         <div>
           <h3 className="text-base font-bold text-foreground">مدیریت کاربران سامانه (Full Featured)</h3>
           <p className="text-xs text-muted-foreground">
-            شامل مرتب‌سازی ستون‌ها، فیلتر پیشرفته، ناوبری صفحه و چک‌باکس‌های انتخابی.
+            شامل مرتب‌سازی ستون‌ها، فیلتر پیشرفته، تم رنگی اختصاصی، ناوبری صفحه و چک‌باکس‌های انتخابی.
           </p>
         </div>
         <div className="text-xs font-medium text-muted-foreground bg-muted/60 px-3 py-1.5 rounded-lg border border-border">
@@ -584,6 +678,7 @@ function FullFeaturedComponent(args: React.ComponentProps<typeof Table<UserItem>
 
       <Table<UserItem>
         {...args}
+        variant="lightPrimary"
         selectable
         showRowIndex
         pagination
@@ -604,7 +699,7 @@ export const FullFeatured: Story = {
 };
 
 // -----------------------------------------------------------------------------
-// 7. انواع تراکم‌ها (Density Variants)
+// 8. انواع تراکم‌ها (Density Variants)
 // -----------------------------------------------------------------------------
 export const DensityVariants: Story = {
   render: (args) => (
@@ -634,7 +729,7 @@ export const DensityVariants: Story = {
 };
 
 // -----------------------------------------------------------------------------
-// 8. سطرهای راه‌راه (Striped Style)
+// 9. سطرهای راه‌راه (Striped Style)
 // -----------------------------------------------------------------------------
 export const StripedRows: Story = {
   args: {
@@ -650,7 +745,7 @@ export const StripedRows: Story = {
 };
 
 // -----------------------------------------------------------------------------
-// 9. حالت اسکلتی در حال بارگذاری (Loading State)
+// 10. حالت اسکلتی در حال بارگذاری (Loading State)
 // -----------------------------------------------------------------------------
 export const LoadingState: Story = {
   args: {
@@ -671,7 +766,7 @@ export const LoadingState: Story = {
 };
 
 // -----------------------------------------------------------------------------
-// 10. حالت داده خالی (Empty State)
+// 11. حالت داده خالی (Empty State)
 // -----------------------------------------------------------------------------
 export const EmptyData: Story = {
   args: {
@@ -687,7 +782,7 @@ export const EmptyData: Story = {
 };
 
 // -----------------------------------------------------------------------------
-// 11. اسکرول عمودی با هدر چسبنده (Sticky Header & Max Height)
+// 12. اسکرول عمودی با هدر چسبنده (Sticky Header & Max Height)
 // -----------------------------------------------------------------------------
 export const StickyHeaderAndScroll: Story = {
   args: {

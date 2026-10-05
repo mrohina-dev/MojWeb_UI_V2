@@ -2,6 +2,8 @@ import * as React from "react";
 import type { VariantProps } from "class-variance-authority";
 import type { tableVariants } from "./table.variants";
 
+export type TableVariant = "default" | "lightPrimary" | "secondary" | "ghost" | "primary";
+export type TableDensity = "compact" | "default" | "relaxed";
 export type SortDirection = "asc" | "desc" | null;
 
 export interface SortState {
@@ -32,7 +34,7 @@ export interface TableColumn<T> {
 }
 
 export interface PaginationState {
-    pageIndex: number; // 1-based (starts from 1)
+    pageIndex: number; // 1-based
     pageSize: number;
     total?: number;
 }
@@ -44,35 +46,41 @@ export interface TableRootProps<T>
     columns: TableColumn<T>[];
     rowKey?: keyof T | ((item: T) => string | number);
 
-    // لودینگ و داده خالی
+    // Variants
+    variant?: TableVariant;
+    density?: TableDensity;
+    bordered?: boolean;
+    striped?: boolean;
+
+    // Loading & Empty state
     isLoading?: boolean;
     loadingRows?: number;
     emptyText?: React.ReactNode;
 
-    // ردیف ایندکس (ردیف شماره)
+    // Row Index
     showRowIndex?: boolean;
     rowIndexHeader?: React.ReactNode;
 
-    // انتخاب سطر
+    // Row Selection
     selectable?: boolean;
     multiSelect?: boolean;
     selectedRowKeys?: (string | number)[];
     defaultSelectedRowKeys?: (string | number)[];
     onSelectionChange?: (selectedKeys: (string | number)[], selectedRows: T[]) => void;
 
-    // سورت (اختیاری - کلاینت یا سرور)
+    // Sorting
     sortState?: SortState | null;
     defaultSortState?: SortState | null;
     onSortChange?: (sortState: SortState | null) => void;
-    manualSorting?: boolean; // برای سورت سمت سرور
+    manualSorting?: boolean;
 
-    // فیلتر (اختیاری - کلاینت یا سرور)
+    // Filtering
     filterState?: FilterState[];
     defaultFilterState?: FilterState[];
     onFilterChange?: (filters: FilterState[]) => void;
-    manualFiltering?: boolean; // برای فیلتر سمت سرور
+    manualFiltering?: boolean;
 
-    // صفحه‌بندی (اختیاری)
+    // Pagination
     pagination?: boolean;
     pageIndex?: number;
     defaultPageIndex?: number;
@@ -84,11 +92,11 @@ export interface TableRootProps<T>
     onPageSizeChange?: (pageSize: number) => void;
     manualPagination?: boolean;
 
-    // رویدادهای سطر
+    // Row Events
     onRowClick?: (item: T, index: number) => void;
     rowClassName?: (item: T, index: number) => string | undefined;
 
-    // اسکرول و ابعاد
+    // Dimensions & Header
     maxHeight?: string | number;
     stickyHeader?: boolean;
     children?: React.ReactNode;

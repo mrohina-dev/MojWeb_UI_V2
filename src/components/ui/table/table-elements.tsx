@@ -1,19 +1,21 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { tableContainerVariants } from "./table.variants";
+import type { TableVariant } from "./table.types";
 
-export const TableContainer = React.forwardRef<
-    HTMLDivElement,
-    React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-    <div
-        ref={ref}
-        className={cn(
-            "relative w-full overflow-hidden rounded-xl border border-border bg-card shadow-xs",
-            className
-        )}
-        {...props}
-    />
-));
+export interface TableContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+    variant?: TableVariant;
+}
+
+export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerProps>(
+    ({ className, variant = "default", ...props }, ref) => (
+        <div
+            ref={ref}
+            className={cn(tableContainerVariants({ variant }), className)}
+            {...props}
+        />
+    )
+);
 TableContainer.displayName = "TableContainer";
 
 export const TableScrollWrapper = React.forwardRef<
@@ -22,7 +24,10 @@ export const TableScrollWrapper = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <div
         ref={ref}
-        className={cn("w-full overflow-x-auto overflow-y-auto custom-scrollbar", className)}
+        className={cn(
+            "w-full overflow-x-auto overflow-y-auto custom-scrollbar scrollbar-thin scrollbar-thumb-border hover:scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent",
+            className
+        )}
         {...props}
     />
 ));
@@ -35,8 +40,8 @@ export const TableHeader = React.forwardRef<
     <thead
         ref={ref}
         className={cn(
-            "bg-muted/50 text-muted-foreground font-medium select-none border-b border-border",
-            sticky && "sticky top-0 z-10 backdrop-blur-md bg-muted/80 shadow-2xs",
+            "select-none transition-colors",
+            sticky && "sticky top-0 z-10 shadow-2xs backdrop-blur-md",
             className
         )}
         {...props}
@@ -50,7 +55,7 @@ export const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <tbody
         ref={ref}
-        className={cn("divide-y divide-border/50 bg-background text-foreground", className)}
+        className={cn("bg-background text-foreground transition-colors", className)}
         {...props}
     />
 ));
@@ -63,7 +68,7 @@ export const TableFooter = React.forwardRef<
     <tfoot
         ref={ref}
         className={cn(
-            "border-t border-border bg-muted/40 font-medium text-foreground",
+            "border-t font-medium text-foreground bg-muted/40",
             className
         )}
         {...props}
@@ -83,9 +88,7 @@ export const TableRow = React.forwardRef<
         data-state={selected ? "selected" : undefined}
         className={cn(
             "transition-colors",
-            clickable && "cursor-pointer hover:bg-muted/40",
-            !clickable && "hover:bg-muted/20",
-            selected && "bg-primary/5 hover:bg-primary/10",
+            clickable && "cursor-pointer",
             className
         )}
         {...props}
@@ -103,7 +106,7 @@ export const TableHead = React.forwardRef<
         ref={ref}
         scope="col"
         className={cn(
-            "text-xs font-semibold tracking-wider text-muted-foreground uppercase transition-colors",
+            "text-xs font-semibold tracking-wider uppercase transition-colors align-middle",
             align === "center" && "text-center",
             align === "left" && "text-left",
             align === "right" && "text-right",
@@ -123,7 +126,7 @@ export const TableCell = React.forwardRef<
     <td
         ref={ref}
         className={cn(
-            "align-middle leading-normal",
+            "align-middle leading-normal transition-colors",
             align === "center" && "text-center",
             align === "left" && "text-left",
             align === "right" && "text-right",
