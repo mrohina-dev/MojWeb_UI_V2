@@ -31,6 +31,23 @@ export interface DropdownMenuGroupLabelProps
 
 export type DropdownMenuSeparatorProps = React.ComponentPropsWithoutRef<typeof BaseMenu.Separator>;
 
+/* --- تایپ‌های تصحیح‌شده ساب‌منو (Submenu) --- */
+export type DropdownMenuSubProps = React.ComponentPropsWithoutRef<typeof BaseMenu.SubmenuRoot>;
+
+export interface DropdownMenuSubTriggerProps
+  extends React.ComponentPropsWithoutRef<typeof BaseMenu.SubmenuTrigger> {
+  inset?: boolean;
+}
+
+export interface DropdownMenuSubContentProps
+  extends React.ComponentPropsWithoutRef<typeof BaseMenu.Popup>,
+    DropdownMenuContentVariantProps {
+  sideOffset?: number;
+  alignOffset?: number;
+  side?: 'top' | 'right' | 'bottom' | 'left';
+  align?: 'start' | 'center' | 'end';
+}
+
 export interface DropdownMenuItemConfig {
   id?: string;
   label: React.ReactNode;
@@ -39,6 +56,7 @@ export interface DropdownMenuItemConfig {
   destructive?: boolean;
   disabled?: boolean;
   onSelect?: () => void;
+  children?: DropdownMenuItemConfig[];
 }
 
 export interface DropdownMenuGroupConfig {
