@@ -24,10 +24,10 @@ export const checkboxRootVariants = cva(
 
 export const checkboxControlVariants = cva(
   [
-    // ساختار اصلی جعبه چک‌باکس (مربعی با گوشه‌های بسیار ظریف)
-    "peer relative inline-flex shrink-0 items-center justify-center border bg-card text-foreground shadow-2xs transition-colors cursor-pointer",
+    // ساختار اصلی جعبه چک‌باکس
+    "peer relative inline-flex shrink-0 items-center justify-center border bg-card text-foreground shadow-2xs transition-all duration-150 cursor-pointer",
     // وضعیت فوکوس کیبورد
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-1 focus-visible:ring-offset-background focus-visible:opacity-100",
     // وضعیت غیرفعال
     "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/40",
   ],
@@ -40,13 +40,11 @@ export const checkboxControlVariants = cva(
         lg: "size-5 rounded-[5px]",
       },
       hasError: {
-        // حالت خطای نرمال و زمانی که تیک خورده است (روی تم رنگی خطا باقی می‌ماند)
         true: [
           "border-destructive text-destructive-foreground focus-visible:ring-destructive/40",
           "data-[checked]:bg-destructive data-[checked]:border-destructive data-[checked]:text-destructive-foreground",
           "data-[indeterminate]:bg-destructive data-[indeterminate]:border-destructive data-[indeterminate]:text-destructive-foreground",
         ],
-        // حالت عادی
         false: [
           "border-primary-200 hover:border-primary-400 focus-visible:border-primary",
           "data-[checked]:bg-primary data-[checked]:border-primary data-[checked]:text-primary-foreground",
@@ -54,7 +52,14 @@ export const checkboxControlVariants = cva(
         ],
       },
       isTableInline: {
-        true: "border-transparent bg-transparent shadow-none hover:border-border focus-visible:ring-1 focus-visible:ring-inset",
+        true: [
+          // حالت دیفالت در جدول: محو با بوردر بسیار ظریف
+          "opacity-40 border-muted-foreground/40 bg-background/50 shadow-none",
+          // روی هاور خود چک‌باکس یا هاور سطر جدول: پررنگ و شارپ
+          "hover:opacity-100 hover:border-primary group-hover:opacity-100",
+          // وقتی تیک خورده باشد: همیشه پررنگ و ۱۰۰٪
+          "data-[checked]:opacity-100 data-[indeterminate]:opacity-100",
+        ],
         false: "",
       },
     },
