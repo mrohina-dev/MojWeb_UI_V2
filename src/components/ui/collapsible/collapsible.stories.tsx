@@ -85,6 +85,26 @@ export const WithIconAndDivider: Story = {
   ),
 };
 
+export const GhostHeadlessVariant: Story = {
+  name: "Ghost (Headless / Unstyled)",
+  args: {
+    title: "آیتم بدون استایل پیش‌فرض (Ghost)",
+    variant: "ghost",
+    size: "default",
+    defaultOpen: true,
+    divided: false,
+  },
+  render: (args) => (
+    <div className="w-90 rounded-md border border-dashed border-border p-4">
+      <Collapsible {...args}>
+        <div className="pt-2 text-xs text-muted-foreground">
+          این وارینت هیچ فریم یا پدینگ ناخواسته‌ای اضافه نمی‌کند و برای استفاده درون کامپوننت‌های پیچیده مثل Sidebar یا Menus ایده‌آل است.
+        </div>
+      </Collapsible>
+    </div>
+  ),
+};
+
 export const AllVariants: Story = {
   render: () => {
     const variants = [
@@ -103,7 +123,7 @@ export const AllVariants: Story = {
             variant={variant}
             title={`واریانت: ${variant}`}
             defaultOpen={variant === "primary"}
-            divided
+            divided={variant !== "ghost"}
           >
             محتوای نمونه جهت بررسی رفتار رنگی و استایل‌های واریانت {variant}.
           </Collapsible>
@@ -156,54 +176,56 @@ export const BaseCompoundExample: Story = {
 
 export const InSidebarNavigation: Story = {
   render: () => (
-    <div className="w-64 rounded-xl border border-sidebar-border bg-sidebar p-3 text-sidebar-foreground">
+    <div className="w-64 rounded-xl border border-border bg-card p-3 text-card-foreground">
       <div className="mb-2 px-2 text-xs font-semibold text-muted-foreground">
-        ناوبری سایدبار
+        ناوبری سایدبار (استفاده از Ghost)
       </div>
       <div className="flex flex-col gap-1">
-        <Collapsible
-          variant="ghost"
-          size="sm"
-          title="مدیریت کاربران"
-          icon={<User className="size-4" />}
-        >
-          <div className="flex flex-col gap-1 pr-6 pt-1 text-xs">
+        <BaseCollapsible variant="ghost">
+          <BaseCollapsibleTrigger className="flex h-9 w-full items-center justify-between rounded-md px-2.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground">
+            <span className="flex items-center gap-2">
+              <User className="size-4" />
+              مدیریت کاربران
+            </span>
+          </BaseCollapsibleTrigger>
+          <BaseCollapsibleContent className="mr-6 flex flex-col gap-1 border-r border-border pr-3 pt-1 text-xs">
             <a
               href="#"
-              className="rounded-md p-1.5 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              className="rounded-md p-1.5 hover:bg-accent hover:text-accent-foreground"
             >
               لیست کاربران
             </a>
             <a
               href="#"
-              className="rounded-md p-1.5 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              className="rounded-md p-1.5 hover:bg-accent hover:text-accent-foreground"
             >
               سطوح دسترسی
             </a>
-          </div>
-        </Collapsible>
+          </BaseCollapsibleContent>
+        </BaseCollapsible>
 
-        <Collapsible
-          variant="ghost"
-          size="sm"
-          title="پیکربندی سیستم"
-          icon={<Settings className="size-4" />}
-        >
-          <div className="flex flex-col gap-1 pr-6 pt-1 text-xs">
+        <BaseCollapsible variant="ghost">
+          <BaseCollapsibleTrigger className="flex h-9 w-full items-center justify-between rounded-md px-2.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground">
+            <span className="flex items-center gap-2">
+              <Settings className="size-4" />
+              پیکربندی سیستم
+            </span>
+          </BaseCollapsibleTrigger>
+          <BaseCollapsibleContent className="mr-6 flex flex-col gap-1 border-r border-border pr-3 pt-1 text-xs">
             <a
               href="#"
-              className="rounded-md p-1.5 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              className="rounded-md p-1.5 hover:bg-accent hover:text-accent-foreground"
             >
               اتصال پایگاه داده
             </a>
             <a
               href="#"
-              className="rounded-md p-1.5 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              className="rounded-md p-1.5 hover:bg-accent hover:text-accent-foreground"
             >
               گزارش لاگ‌ها
             </a>
-          </div>
-        </Collapsible>
+          </BaseCollapsibleContent>
+        </BaseCollapsible>
       </div>
     </div>
   ),

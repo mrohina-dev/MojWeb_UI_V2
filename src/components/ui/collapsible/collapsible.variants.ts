@@ -1,21 +1,23 @@
 import { cva } from "class-variance-authority";
 
 /**
- * استایل کانتینر اصلی کامپوننت هماهنگ با تم، کارت‌ها و اینپوت‌ها
+ * استایل کانتینر اصلی کامپوننت
+ * در وارینت ghost، کانتینر کاملاً شفاف و بدون فریم است تا به عنوان Headless عمل کند.
  */
 export const collapsibleRootVariants = cva(
-  "group/collapsible w-full min-w-0 rounded-lg transition-all duration-150",
+  "group/collapsible w-full min-w-0 transition-all duration-150",
   {
     variants: {
       variant: {
         default:
-          "border border-border bg-card text-card-foreground shadow-xs hover:border-border/80 hover:shadow-sm",
+          "rounded-lg border border-border bg-card text-card-foreground shadow-xs hover:border-border/80 hover:shadow-sm",
         primary:
-          "border border-primary-200/70 bg-card text-foreground shadow-xs hover:border-primary/50 data-[panel-open]:border-primary focus-within:border-primary focus-within:ring-1 focus-within:ring-ring",
+          "rounded-lg border border-primary-200/70 bg-card text-foreground shadow-xs hover:border-primary/50 data-[panel-open]:border-primary focus-within:border-primary focus-within:ring-1 focus-within:ring-ring",
         secondary:
-          "border border-border/70 bg-secondary/30 text-secondary-foreground hover:border-border",
+          "rounded-lg border border-border/70 bg-secondary/30 text-secondary-foreground hover:border-border",
         destructive:
-          "border border-destructive/25 bg-card text-card-foreground shadow-xs hover:border-destructive/50 data-[panel-open]:border-destructive",
+          "rounded-lg border border-destructive/25 bg-card text-card-foreground shadow-xs hover:border-destructive/50 data-[panel-open]:border-destructive",
+        // وارینت Headless: کاملاً شفاف و بدون حاشیه/سایه
         ghost: "border-transparent bg-transparent shadow-none",
       },
     },
@@ -26,7 +28,7 @@ export const collapsibleRootVariants = cva(
 );
 
 /**
- * استایل دکمه بازکننده (Trigger) بدون تداخل پس‌زمینه و هماهنگ با فیدبک‌های ظریف
+ * استایل دکمه بازکننده (Trigger)
  */
 export const collapsibleTriggerVariants = cva(
   [
@@ -52,10 +54,17 @@ export const collapsibleTriggerVariants = cva(
           "text-secondary-foreground/85 hover:text-secondary-foreground data-[panel-open]:text-secondary-foreground",
         destructive:
           "text-destructive/80 hover:text-destructive data-[panel-open]:text-destructive",
-        ghost:
-          "rounded-md hover:bg-muted/60 text-foreground",
+        // در حالت ghost استایل‌های ابعادی و هاور پیش‌فرض پاک شده و به والد واگذار می‌شود
+        ghost: "text-foreground",
       },
     },
+    compoundVariants: [
+      // حذف ارتفاع و پدینگ پیش‌فرض در وارینت ghost برای سازگاری کامل با کامپوننت‌های والد مثل Sidebar
+      {
+        variant: "ghost",
+        className: "h-auto px-0 py-0",
+      },
+    ],
     defaultVariants: {
       size: "default",
       variant: "default",
@@ -68,7 +77,7 @@ export const collapsibleTriggerVariants = cva(
  */
 export const collapsibleChevronVariants = cva(
   [
-    "shrink-0 text-muted-foreground/70 transition-all duration-200 ease-in-out",
+    "shrink-0 text-muted-foreground/70 transition-transform duration-200 ease-in-out",
     "group-data-[panel-open]/trigger:rotate-180 group-data-[panel-open]:rotate-180 group-data-panel-open/trigger:rotate-180",
     "group-hover/trigger:text-foreground group-data-[panel-open]/trigger:text-foreground",
   ],
@@ -88,7 +97,7 @@ export const collapsibleChevronVariants = cva(
 );
 
 /**
- * انیمیشن پنل محتوا با Base UI و انیمیشن‌های CSS ارتفاع
+ * انیمیشن و فاصله‌گذاری پنل محتوا
  */
 export const collapsiblePanelVariants = cva(
   "w-full min-w-0 overflow-hidden text-muted-foreground transition-[height] duration-200 ease-out data-[ending-style]:h-0 data-[starting-style]:h-0",
@@ -100,13 +109,28 @@ export const collapsiblePanelVariants = cva(
         default: "px-3 pb-3 pt-2 text-sm",
         lg: "px-4 pb-4 pt-3 text-base",
       },
+      variant: {
+        default: "",
+        primary: "",
+        secondary: "",
+        destructive: "",
+        // در حالت ghost هیچ پدینگ تحمیلی اعمال نمی‌شود
+        ghost: "p-0",
+      },
       divided: {
         true: "border-t border-border/60 mt-1",
         false: "",
       },
     },
+    compoundVariants: [
+      {
+        variant: "ghost",
+        className: "p-0",
+      },
+    ],
     defaultVariants: {
       size: "default",
+      variant: "default",
       divided: false,
     },
   }
