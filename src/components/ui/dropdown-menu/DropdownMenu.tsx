@@ -14,10 +14,13 @@ import type {
   DropdownMenuProps,
   DropdownMenuRootProps,
   DropdownMenuSeparatorProps,
+  DropdownMenuSubContentProps,
+  DropdownMenuSubProps,
+  DropdownMenuSubTriggerProps,
   DropdownMenuTriggerProps,
 } from './dropdown-menu.types';
 
-/* --- کامپوننت‌های ترکیبی اتمیک (Compound) --- */
+/* --- کامپوننت‌های ترکیبی اتمیک اصلی --- */
 
 export function DropdownMenuRoot(props: DropdownMenuRootProps) {
   return <BaseMenu.Root {...props} />;
@@ -117,6 +120,69 @@ export const DropdownMenuSeparator = React.forwardRef<HTMLDivElement, DropdownMe
 );
 DropdownMenuSeparator.displayName = 'DropdownMenuSeparator';
 
+/* --- کامپوننت‌های ترکیبی اتمیک زیرمنو (Submenu) --- */
+
+// اصلاح اصلی: استفاده از BaseMenu.SubmenuRoot به جای BaseMenu.Root
+export function DropdownMenuSub(props: DropdownMenuSubProps) {
+  return <BaseMenu.SubmenuRoot {...props} />;
+}
+
+export const DropdownMenuSubTrigger = React.forwardRef<HTMLDivElement, DropdownMenuSubTriggerProps>(
+  ({ className, inset, children, ...props }, ref) => {
+    return (
+      <BaseMenu.SubmenuTrigger
+        ref={ref}
+        className={cn(
+          dropdownMenuItemVariants({ inset }),
+          'cursor-pointer data-open:bg-accent data-open:text-accent-foreground',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </BaseMenu.SubmenuTrigger>
+    );
+  }
+);
+DropdownMenuSubTrigger.displayName = 'DropdownMenuSubTrigger';
+
+export const DropdownMenuSubContent = React.forwardRef<HTMLDivElement, DropdownMenuSubContentProps>(
+  (
+    {
+      className,
+      children,
+      size = 'default',
+      variant = 'default',
+      sideOffset = 4,
+      alignOffset = -4,
+      side = 'left',
+      align = 'start',
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <BaseMenu.Portal>
+        <BaseMenu.Positioner
+          sideOffset={sideOffset}
+          alignOffset={alignOffset}
+          side={side}
+          align={align}
+        >
+          <BaseMenu.Popup
+            ref={ref}
+            className={cn(dropdownMenuContentVariants({ size, variant }), className)}
+            {...props}
+          >
+            {children}
+          </BaseMenu.Popup>
+        </BaseMenu.Positioner>
+      </BaseMenu.Portal>
+    );
+  }
+);
+DropdownMenuSubContent.displayName = 'DropdownMenuSubContent';
+
 /* --- کامپوننت جامع Shorthand --- */
 
 function isGroupConfig(
@@ -207,3 +273,6 @@ DropdownMenu.Content = DropdownMenuContent;
 DropdownMenu.Item = DropdownMenuItem;
 DropdownMenu.GroupLabel = DropdownMenuGroupLabel;
 DropdownMenu.Separator = DropdownMenuSeparator;
+DropdownMenu.Sub = DropdownMenuSub;
+DropdownMenu.SubTrigger = DropdownMenuSubTrigger;
+DropdownMenu.SubContent = DropdownMenuSubContent;

@@ -6,6 +6,9 @@ export {
   DropdownMenuItem,
   DropdownMenuGroupLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger
 } from './DropdownMenu';
 
 export type {

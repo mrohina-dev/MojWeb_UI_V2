@@ -24,7 +24,10 @@ import type {
    Base / Compound Components
    ========================================================================= */
 
-export const BaseCollapsible = React.forwardRef<HTMLDivElement, BaseCollapsibleProps>(
+export const BaseCollapsible = React.forwardRef<
+  HTMLDivElement,
+  BaseCollapsibleProps
+>(
   (
     {
       size = "default",
@@ -91,12 +94,15 @@ export const BaseCollapsibleContent = React.forwardRef<
   HTMLDivElement,
   BaseCollapsibleContentProps
 >(({ className, children, ...props }, ref) => {
-  const { size, divided } = useCollapsibleContext();
+  const { size, variant, divided } = useCollapsibleContext();
 
   return (
     <BaseUICollapsible.Panel
       ref={ref}
-      className={cn(collapsiblePanelVariants({ size, divided }), className)}
+      className={cn(
+        collapsiblePanelVariants({ size, variant, divided }),
+        className
+      )}
       {...props}
     >
       {children}
