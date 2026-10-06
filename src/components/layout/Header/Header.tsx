@@ -20,6 +20,7 @@ import {
 const Header = ({
   variant = 'default',
   showSidebarToggle = false,
+  hasSidebar = false,
   unreadNotificationsCount = 0,
   unreadMessagesCount = 0,
   className,
@@ -32,12 +33,17 @@ const Header = ({
     <header className={cn(headerVariants({ variant }), className)}>
       {/* برندینگ، لوگو و دکمه تاگل سایدبار */}
       <div className="flex items-center gap-2 md:gap-3">
-        {showSidebarToggle && (
-          <SidebarToggle
-            variant="menu" // در هدر همیشه حس «منو» را می‌دهد
-            className={headerActionButtonVariants({ variant })}
-            onClick={onSidebarToggle}
-          />
+        {/* اگر صفحه سایدبار دارد: 
+            اگر showSidebarToggle فعال باشد همه‌جا نشان می‌دهد.
+            اگر فعال نباشد فقط در موبایل (md:hidden) نشان می‌دهد. */}
+        {hasSidebar && (
+          <div className={!showSidebarToggle ? 'md:hidden' : undefined}>
+            <SidebarToggle
+              variant="menu"
+              className={headerActionButtonVariants({ variant })}
+              onClick={onSidebarToggle}
+            />
+          </div>
         )}
 
         <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-white p-1 shadow-xs ring-1 ring-black/5 dark:ring-white/10">
