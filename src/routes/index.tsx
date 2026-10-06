@@ -1,24 +1,25 @@
-import { lazy } from "react";
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
-import { ProtectedRoute } from "./ProtectedRoute";
-import { PublicRoute } from "./PublicRoute";
-import GeneralLayout from "@/components/layout/general-layout";
+import { lazy } from 'react';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { ProtectedRoute } from './ProtectedRoute';
+import { PublicRoute } from './PublicRoute';
+import GeneralLayout from '@/components/layout/GeneralLayout';
+import ModuleLayout from '@/components/layout/ModuleLayout';
 
-const HomePage = lazy(() => import("@/pages/home/HomePage"));
-const LoginPage = lazy(() => import("@/pages/login"));
+const HomePage = lazy(() => import('@/pages/home/HomePage'));
+const LoginPage = lazy(() => import('@/pages/login'));
 
-const SvjSendFileListPage = lazy(() => import("@/pages/svj/send-file-list"));
-const PayaListPage = lazy(() => import("@/pages/paya/list"));
-const SatnaPage = lazy(() => import("@/pages/satna"));
+const SvjSendFileListPage = lazy(() => import('@/pages/svj/send-file-list'));
+const PayaListPage = lazy(() => import('@/pages/paya/list'));
+const SatnaPage = lazy(() => import('@/pages/satna'));
 
-export const SELECT_OPTIONS_ROUTE = "/SelectOptions";
+export const SELECT_OPTIONS_ROUTE = '/SelectOptions';
 
 const router = createBrowserRouter([
   {
     element: <PublicRoute />,
     children: [
       {
-        path: "/login",
+        path: '/login',
         element: <LoginPage />,
       },
     ],
@@ -26,30 +27,49 @@ const router = createBrowserRouter([
   {
     element: <ProtectedRoute />,
     children: [
+      // 1. مسیر Home (تنها هدر دارد، بدون سایدبار)
       {
         element: <GeneralLayout />,
         children: [
-          // ریدایرکت خودکار روت اصلی به مسیر انتخاب سرویس
           {
-            path: "/",
+            path: '/',
             element: <Navigate to={SELECT_OPTIONS_ROUTE} replace />,
           },
-          // صفحه Home/انتخاب سرویس‌ها
           {
-            path: "/SelectOptions",
+            path: '/SelectOptions',
             element: <HomePage />,
           },
-          // ماژول‌های واریز
+        ],
+      },
+
+      // 2. ماژول واریز گروهی (SVJ)
+      {
+        element: <ModuleLayout moduleKey="svj" />,
+        children: [
           {
-            path: "/svj/SendFileList",
+            path: '/svj/SendFileList',
             element: <SvjSendFileListPage />,
           },
+        ],
+      },
+
+      // 3. ماژول پایا (Paya)
+      {
+        element: <ModuleLayout moduleKey="paya" />,
+        children: [
           {
-            path: "/paya/List",
+            path: '/paya/List',
             element: <PayaListPage />,
           },
+        ],
+      },
+
+      // 4. ماژول ساتنا (Satna)
+      {
+        element: <ModuleLayout moduleKey="satna" />,
+        children: [
           {
-            path: "/Satna",
+            path: '/Satna/List',
             element: <SatnaPage />,
           },
         ],
@@ -57,7 +77,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "*",
+    path: '*',
     element: <Navigate to={SELECT_OPTIONS_ROUTE} replace />,
   },
 ]);
