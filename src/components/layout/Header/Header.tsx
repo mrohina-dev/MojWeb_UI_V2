@@ -29,22 +29,39 @@ const Header = ({
   onMessagesClick,
   onLogout,
 }: HeaderProps) => {
+  // ۱. اگر showSidebarToggle باشد همه‌جا نشان می‌دهد.
+  // ۲. اگر نباشد ولی hasSidebar باشد، فقط در موبایل (md:hidden) نشان می‌دهد.
+  const renderSidebarToggle = () => {
+    if (showSidebarToggle) {
+      return (
+        <SidebarToggle
+          variant="menu"
+          className={headerActionButtonVariants({ variant })}
+          onClick={onSidebarToggle}
+        />
+      );
+    }
+
+    if (hasSidebar) {
+      return (
+        <div className="md:hidden">
+          <SidebarToggle
+            variant="menu"
+            className={headerActionButtonVariants({ variant })}
+            onClick={onSidebarToggle}
+          />
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <header className={cn(headerVariants({ variant }), className)}>
       {/* برندینگ، لوگو و دکمه تاگل سایدبار */}
       <div className="flex items-center gap-2 md:gap-3">
-        {/* اگر صفحه سایدبار دارد: 
-            اگر showSidebarToggle فعال باشد همه‌جا نشان می‌دهد.
-            اگر فعال نباشد فقط در موبایل (md:hidden) نشان می‌دهد. */}
-        {hasSidebar && (
-          <div className={!showSidebarToggle ? 'md:hidden' : undefined}>
-            <SidebarToggle
-              variant="menu"
-              className={headerActionButtonVariants({ variant })}
-              onClick={onSidebarToggle}
-            />
-          </div>
-        )}
+        {renderSidebarToggle()}
 
         <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-white p-1 shadow-xs ring-1 ring-black/5 dark:ring-white/10">
           <img
