@@ -45,6 +45,7 @@ export interface SidebarNavItem {
 
 export interface SidebarNavGroup {
   id: string;
+  /** عنوان گروه (در صورت خالی بودن، آیتم‌ها به صورت فلت و بدون هدر رندر می‌شوند) */
   title?: string;
   items: SidebarNavItem[];
 }

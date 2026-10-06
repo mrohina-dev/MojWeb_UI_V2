@@ -34,6 +34,38 @@ export function Sidebar({
 
   const effectiveCollapseMode = propCollapseMode ?? contextCollapseMode;
 
+  // بررسی اینکه آیا اصلاً گروهی دارای عنوان (title) هست یا نه
+  const hasNamedGroups = groups.some((group) => Boolean(group.title));
+
+  // تابع رندر محتوای لیست آیتم‌ها
+  const renderNavList = () => (
+    <div className={cn('overflow-x-hidden', hasNamedGroups ? 'space-y-4' : 'space-y-1')}>
+      {groups.map((group) => (
+        <div key={group.id} className="space-y-1">
+          {group.title && (
+            <div
+              className={sidebarGroupLabelVariants({
+                variant,
+                isCollapsed: isMobile ? false : isCollapsed,
+              })}
+            >
+              {group.title}
+            </div>
+          )}
+          {group.items.map((item) => (
+            <SidebarNavItemRow
+              key={item.id}
+              item={item}
+              variant={variant}
+              currentPath={currentPath}
+              onNavigate={onNavigate}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+
   /* ------------------------------------------------------------------
      حالت موبایل: نمایش به‌صورت Overlay کشویی
      ------------------------------------------------------------------ */
@@ -66,26 +98,9 @@ export function Sidebar({
             {showToggle && <SidebarToggle />}
           </div>
 
-          {/* محتوای اسکرول‌شونده گروه‌ها */}
-          <div className="flex-1 overflow-y-auto px-3 py-4 space-y-4">
-            {groups.map((group) => (
-              <div key={group.id} className="space-y-1">
-                {group.title && (
-                  <div className={sidebarGroupLabelVariants({ variant, isCollapsed: false })}>
-                    {group.title}
-                  </div>
-                )}
-                {group.items.map((item) => (
-                  <SidebarNavItemRow
-                    key={item.id}
-                    item={item}
-                    variant={variant}
-                    currentPath={currentPath}
-                    onNavigate={onNavigate}
-                  />
-                ))}
-              </div>
-            ))}
+          {/* محتوای اسکرول‌شونده موبایل */}
+          <div className="flex-1 overflow-y-auto px-3 py-4">
+            {renderNavList()}
           </div>
 
           {/* فوتر موبایل */}
@@ -138,30 +153,8 @@ export function Sidebar({
       </div>
 
       {/* محتوای آیتم‌ها و گروه‌ها */}
-      <div className="flex-1 overflow-y-auto px-2.5 py-3 space-y-4 overflow-x-hidden">
-        {groups.map((group) => (
-          <div key={group.id} className="space-y-1">
-            {group.title && (
-              <div
-                className={sidebarGroupLabelVariants({
-                  variant,
-                  isCollapsed,
-                })}
-              >
-                {group.title}
-              </div>
-            )}
-            {group.items.map((item) => (
-              <SidebarNavItemRow
-                key={item.id}
-                item={item}
-                variant={variant}
-                currentPath={currentPath}
-                onNavigate={onNavigate}
-              />
-            ))}
-          </div>
-        ))}
+      <div className="flex-1 overflow-y-auto px-2.5 py-3">
+        {renderNavList()}
       </div>
 
       {/* فوتر سایدبار */}
@@ -171,3 +164,5 @@ export function Sidebar({
     </aside>
   );
 }
+
+export default Sidebar;
