@@ -116,7 +116,7 @@ const largeMockUsers: UserItem[] = Array.from({ length: 30 }).map((_, index) => 
 function StatusBadge({ status }: { status: UserItem["status"] }) {
   if (status === "فعال") {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600">
         <UserCheck className="size-3" />
         {status}
       </span>
@@ -124,14 +124,14 @@ function StatusBadge({ status }: { status: UserItem["status"] }) {
   }
   if (status === "در انتظار") {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400">
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-600">
         <ShieldAlert className="size-3" />
         {status}
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-600 dark:text-rose-400">
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-600">
       <UserX className="size-3" />
       {status}
     </span>
@@ -256,56 +256,6 @@ const meta: Meta<typeof Table<UserItem>> = {
 ### کامپوننت جامع جدول داده‌ها (Data Table)
 
 کامپوننت جدول بر اساس استانداردهای دیزاین سیستم، پشتیبانی کامل از **راست‌چین (RTL)**، فونت **وزیرمتن**، متغیرهای رنگی **OKLCH**، تم‌های رنگی متنوع (\`variant\`)، فیلتر ترکیبی، مرتب‌سازی، لودینگ اسکلتی، انتخاب ردیف‌ها و صفحه‌بندی هوشمند کلاینت و سرور طراحی شده است.
-
----
-
-### راهنمای تعریف ستون‌ها (TableColumn Structure)
-برای رندر کردن کامپوننت‌های سفارشی مانند بج وضعیت یا دکمه‌های عملیات داخل ستون‌ها از تابع \`cell\` استفاده کنید:
-
-\`\`\`tsx
-const columns: TableColumn<UserItem>[] = [
-  {
-    key: "name",
-    header: "کاربر",
-    sortable: true,
-    filterable: true,
-    filterPlaceholder: "جست‌وجو...",
-    cell: (row) => (
-      <div className="flex flex-col">
-        <span className="font-semibold text-foreground text-sm">{row.name}</span>
-        <span className="text-xs text-muted-foreground font-mono">{row.email}</span>
-      </div>
-    ),
-  },
-  {
-    key: "status",
-    header: "وضعیت",
-    align: "center",
-    cell: (row) => (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600">
-        {row.status}
-      </span>
-    ),
-  },
-  {
-    key: "actions",
-    header: "عملیات",
-    align: "center",
-    cell: (row) => (
-      <Button
-        variant="ghost"
-        size="xs"
-        shape="circle"
-        title="ویرایش"
-        stopPropagation
-        onClick={() => console.log("Edit row:", row.id)}
-      >
-        <Edit2 className="size-3.5" />
-      </Button>
-    ),
-  },
-];
-\`\`\`
         `,
       },
     },
@@ -313,7 +263,7 @@ const columns: TableColumn<UserItem>[] = [
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "lightPrimary", "secondary", "ghost", "primary"],
+      options: ["default", "primary", "lightPrimary", "secondary", "ghost"],
       description: "تم رنگی و استایل جدول",
       table: {
         defaultValue: { summary: "default" },
@@ -415,10 +365,9 @@ export const Default: Story = {
 };
 
 // -----------------------------------------------------------------------------
-// 2. واریانت‌های رنگی (Color Scheme Variants)
+// 2. واریانت‌های رنگی (Color Variants)
 // -----------------------------------------------------------------------------
 export const ColorVariants: Story = {
-  name: "Color Variants",
   render: (args) => (
     <div className="w-full max-w-5xl mx-auto p-4 space-y-8 bg-background">
       <div className="space-y-2">
@@ -438,7 +387,7 @@ export const ColorVariants: Story = {
 
       <div className="space-y-2">
         <div className="text-xs font-bold text-primary uppercase tracking-wide">
-          پرایمری (Primary)
+          پرایمری پررنگ (Primary)
         </div>
         <Table<UserItem>
           {...args}
@@ -794,7 +743,7 @@ export const StickyHeaderAndScroll: Story = {
   render: (args) => (
     <div className="w-full max-w-4xl mx-auto p-4 space-y-2 bg-background">
       <p className="text-xs text-muted-foreground">
-        اسکرول عمودی با حداکثر ارتفاع ۲۸۰ پیکسل و هدر شناور نیمه‌شفاف بلور شده:
+        اسکرول عمودی با حداکثر ارتفاع ۲۸۰ پیکسل و هدر شناور نیمه‌شفاف:
       </p>
       <Table<UserItem> {...args} />
     </div>
