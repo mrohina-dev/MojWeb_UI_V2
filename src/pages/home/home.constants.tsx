@@ -60,7 +60,7 @@ export const HOME_MODULES: ModuleItem[] = [
     icon: <Hash className="h-6 w-6" />,
     iconBgColor: 'violet',
     actionText: 'ورود به واریز گروهی از طریق شماره شبا',
-    route: '/Satna',
+    route: '/Satna/List',
     descriptions: [
       'امکان برداشت مستقیم از حساب و واریز به حساب‌های سایر بانک‌ها',
       'امکان برداشت توسط ارائه چک و واریز به حساب‌های سایر بانک‌ها',
