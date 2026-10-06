@@ -1,0 +1,1 @@
+export { GeneralLayout, default } from './GeneralLayout';
