@@ -13,8 +13,13 @@ const meta: Meta<typeof MultiSelect> = {
   argTypes: {
     size: {
       control: "select",
-      options: ["xs", "sm", "default", "lg"],
+      options: ["xs", "sm", "default", "lg", "xl"],
       description: "سایز کامپوننت",
+    },
+    variant: {
+      control: "select",
+      options: ["default", "primary", "secondary", "ghost", "lightPrimary"],
+      description: "واریانت تم ظاهری فیلد",
     },
     disabled: {
       control: "boolean",
@@ -147,17 +152,35 @@ export const Preselected: Story = {
   },
 };
 
-export const MaxVisibleLabelsAndRTL: Story = {
-  render: (args) => <ControlledMultiSelect {...args} />,
-  args: {
-    label: "کنترل تعداد نمایش و بج شمارنده (RTL)",
-    placeholder: "انتخاب چند مورد...",
-    options: sampleOptions,
-    defaultValue: ["react", "vue", "angular", "nextjs"],
-    maxVisibleLabels: 2,
-    helperText: "نمایش ۲ آیتم و جمع‌آوری مابقی در بج شمارنده بدون تداخل BiDi",
-    fullWidth: true,
-  },
+export const Variants: Story = {
+  render: () => (
+    <div className="flex flex-col gap-5 w-80" dir="rtl">
+      <ControlledMultiSelect
+        variant="default"
+        label="واریانت پیش‌فرض (Default)"
+        placeholder="انتخاب..."
+        options={sampleOptions}
+      />
+      <ControlledMultiSelect
+        variant="primary"
+        label="واریانت اصلی (Primary)"
+        placeholder="انتخاب..."
+        options={sampleOptions}
+      />
+      <ControlledMultiSelect
+        variant="lightPrimary"
+        label="واریانت روشن (Light Primary)"
+        placeholder="انتخاب..."
+        options={sampleOptions}
+      />
+      <ControlledMultiSelect
+        variant="secondary"
+        label="واریانت ثانویه (Secondary)"
+        placeholder="انتخاب..."
+        options={sampleOptions}
+      />
+    </div>
+  ),
 };
 
 export const Sizes: Story = {
@@ -184,6 +207,12 @@ export const Sizes: Story = {
       <ControlledMultiSelect
         size="lg"
         label="سایز بزرگ (Large)"
+        placeholder="انتخاب..."
+        options={sampleOptions}
+      />
+      <ControlledMultiSelect
+        size="xl"
+        label="سایز خیلی بزرگ (Extra Large)"
         placeholder="انتخاب..."
         options={sampleOptions}
       />
