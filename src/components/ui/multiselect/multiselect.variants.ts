@@ -14,19 +14,35 @@ export const multiSelectTriggerVariants = cva(
         sm: "h-8 text-xs px-2.5",
         default: "h-10 text-sm px-3",
         lg: "h-12 text-base px-4",
+        xl: "h-14 text-lg px-4.5 rounded-xl",
+      },
+      variant: {
+        default: "border-input bg-card hover:bg-accent/40",
+        primary: "border-primary/40 bg-primary/5 hover:border-primary",
+        secondary: "border-secondary/40 bg-secondary/10 hover:border-secondary",
+        ghost: "border-transparent bg-transparent shadow-none hover:bg-accent",
+        lightPrimary: "border-primary-200 bg-primary-50/50 hover:border-primary-300",
       },
       hasError: {
         true: "border-destructive focus-visible:ring-destructive/50 data-[popup-open]:border-destructive data-[popup-open]:ring-1 data-[popup-open]:ring-destructive/50",
-        false:
-          "border-primary-200 hover:border-primary-300 focus-visible:border-primary data-[popup-open]:border-primary data-[popup-open]:ring-1 data-[popup-open]:ring-ring",
+        false: "",
       },
       fullWidth: {
         true: "w-full",
         false: "w-fit min-w-48",
       },
     },
+    compoundVariants: [
+      {
+        hasError: false,
+        variant: "default",
+        className:
+          "border-input hover:border-ring focus-visible:border-ring data-[popup-open]:border-ring data-[popup-open]:ring-1 data-[popup-open]:ring-ring",
+      },
+    ],
     defaultVariants: {
       size: "default",
+      variant: "default",
       hasError: false,
       fullWidth: false,
     },
@@ -49,6 +65,7 @@ export const multiSelectPopupVariants = cva(
         sm: "text-xs",
         default: "text-sm",
         lg: "text-base",
+        xl: "text-base",
       },
     },
     defaultVariants: {
@@ -71,6 +88,7 @@ export const multiSelectItemVariants = cva(
         sm: "text-xs py-1 px-2",
         default: "text-sm py-1.5 px-2.5",
         lg: "text-base py-2 px-3",
+        xl: "text-base py-2.5 px-3.5",
       },
     },
     defaultVariants: {

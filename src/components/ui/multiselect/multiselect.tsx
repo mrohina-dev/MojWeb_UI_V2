@@ -16,9 +16,9 @@ import type {
   MultiSelectOption,
   MultiSelectOptionGroup,
   MultiSelectOptions,
+  MultiSelectSize,
   SimplifiedMultiSelectProps,
 } from "./multiselect.types";
-import type { ComponentSize } from "@/types/ui.types";
 
 function isOptionGroup(
   item: MultiSelectOption | MultiSelectOptionGroup
@@ -67,16 +67,16 @@ function toggleValue(values: string[], v: string): string[] {
   return [...values, v];
 }
 
-interface MultiSelectItemRowProps {
+interface MultiSelectItemRowInternalProps {
   value: string;
   label: string;
   disabled?: boolean;
   selected: boolean;
   onToggle: (value: string) => void;
-  size: ComponentSize;
+  size: MultiSelectSize;
 }
 
-const MultiSelectItemRow: React.FC<MultiSelectItemRowProps> = ({
+const MultiSelectItemRow: React.FC<MultiSelectItemRowInternalProps> = ({
   value,
   label,
   disabled,
@@ -84,7 +84,7 @@ const MultiSelectItemRow: React.FC<MultiSelectItemRowProps> = ({
   onToggle,
   size,
 }) => {
-  const checkboxSize = size === "lg" ? "default" : "sm";
+  const checkboxSize = size === "xl" || size === "lg" ? "default" : "sm";
 
   return (
     <div
@@ -131,6 +131,7 @@ export const MultiSelect = React.forwardRef<
       required,
       fullWidth = true,
       size = "default",
+      variant = "default",
       className,
       wrapperClassName,
 
@@ -240,7 +241,8 @@ export const MultiSelect = React.forwardRef<
       }
     }, [isOpen, searchable]);
 
-    const internalFormSize = size === "lg" ? "default" : size === "xs" ? "xs" : "sm";
+    const internalFormSize =
+      size === "xl" || size === "lg" ? "default" : size === "xs" ? "xs" : "sm";
 
     const onToggle = (v: string) => {
       const next = toggleValue(selectedValues, v);
@@ -314,7 +316,6 @@ export const MultiSelect = React.forwardRef<
             <input type="hidden" name={name} value={selectedValues.join(",")} />
           ) : null}
 
-          {/* Trigger استاندارد و ساده Popover بدون پیچیدگی و اورلپ */}
           <PopoverPrimitive.Trigger
             ref={ref}
             id={selectId}
@@ -324,6 +325,7 @@ export const MultiSelect = React.forwardRef<
             className={cn(
               multiSelectTriggerVariants({
                 size,
+                variant,
                 hasError,
                 fullWidth,
               }),
@@ -360,7 +362,6 @@ export const MultiSelect = React.forwardRef<
             </div>
 
             <div className="flex items-center gap-1 shrink-0">
-              {/* فقط دکمه Clear با استفاده از Button خودمان، ساده و تمیز */}
               {showClearButton && selectedValues.length > 0 && !isEffectivelyDisabled ? (
                 <Button
                   type="button"
