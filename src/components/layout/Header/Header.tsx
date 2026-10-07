@@ -1,7 +1,7 @@
 import { Bell, LogOut, MessageSquare } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/logo2.svg';
 import { ThemeToggle } from '@/components/common/theme-toggle/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import Badge from '@/components/ui/badge';
@@ -63,8 +63,9 @@ const Header = ({
       <div className="flex items-center gap-2 md:gap-3">
         {renderSidebarToggle()}
 
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-white p-1 shadow-xs ring-1 ring-black/5 dark:ring-white/10">
+        <div className={`flex size-7 shrink-0 items-center justify-center rounded-lg shadow-xs ${variant === 'primary' ? "bg-white p-1" : "" }`}>
           <img
+            // src={"/favicon.svg"}
             src={logoImg}
             alt="لوگوی بانک صادرات ایران"
             className="size-full object-contain"
