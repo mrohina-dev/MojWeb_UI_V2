@@ -1,49 +1,27 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import * as React from 'react';
 import { cn } from '@/lib/utils';
 import Header from '../Header';
 import ConfirmDialog from '@/components/common/confirm-dialog';
-import { userService } from '@/services/api/user.service';
 import type { AppShellProps } from './AppShell.type';
-
-const LOGIN_ROUTE = '/login';
 
 export function AppShell({
   children,
   showSidebarToggle = false,
   sidebar,
   className,
+  onLogout,
+  isLoggingOut = false,
+  unreadMessagesCount = 0,
+  unreadNotificationsCount = 0,
 }: AppShellProps) {
-  const navigate = useNavigate();
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = React.useState(false);
 
-  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const handleNotificationsClick = () => {
-    console.log('[Header Action] Notifications clicked');
-  };
-
-  const handleMessagesClick = () => {
-    console.log('[Header Action] Messages clicked');
-  };
-
-  const handleLogoutClick = () => {
-    setIsLogoutDialogOpen(true);
-  };
-
-  const handleConfirmLogout = async () => {
-    try {
-      setIsLoggingOut(true);
-      await userService.logout();
-    } catch (error) {
-      console.error('Logout failed:', error);
-    } finally {
-      setIsLoggingOut(false);
-      setIsLogoutDialogOpen(false);
-      navigate(LOGIN_ROUTE, { replace: true });
+  const handleConfirmLogout = React.useCallback(async () => {
+    if (onLogout) {
+      await onLogout();
     }
-  };
+    setIsLogoutDialogOpen(false);
+  }, [onLogout]);
 
   return (
     <div
@@ -52,34 +30,40 @@ export function AppShell({
         className
       )}
     >
-      {/* هدر: خودش متوجه می‌شود سایدبار وجود دارد یا نه */}
       <Header
         showSidebarToggle={showSidebarToggle}
         hasSidebar={Boolean(sidebar)}
-        unreadNotificationsCount={0}
-        unreadMessagesCount={0}
-        onNotificationsClick={handleNotificationsClick}
-        onMessagesClick={handleMessagesClick}
-        onLogout={handleLogoutClick}
+        unreadNotificationsCount={unreadNotificationsCount}
+        unreadMessagesCount={unreadMessagesCount}
+        onNotificationsClick={() => console.log('[Header Action] Notifications')}
+        onMessagesClick={() => console.log('[Header Action] Messages')}
+        onLogout={() => setIsLogoutDialogOpen(true)}
       />
 
-      {/* ناحیه محتوا */}
       <div className="flex flex-1 min-h-0 w-full overflow-hidden">
-        {sidebar && <div className="h-full shrink-0 flex">{sidebar}</div>}
-        <main className="flex-1 min-w-0 h-full overflow-y-auto">{children}</main>
+        {sidebar && (
+          <aside className="h-full shrink-0 flex" aria-label="منوی کناری">
+            {sidebar}
+          </aside>
+        )}
+        <div className="flex-1 min-w-0 h-full overflow-y-auto">
+          {children}
+        </div>
       </div>
 
-      <ConfirmDialog
-        open={isLogoutDialogOpen}
-        onOpenChange={setIsLogoutDialogOpen}
-        title="خروج از حساب کاربری"
-        message="آیا برای خروج از سامانه موج بانک صادرات ایران اطمینان دارید؟"
-        confirmText="خروج"
-        cancelText="انصراف"
-        variant="destructive"
-        isLoading={isLoggingOut}
-        onConfirm={handleConfirmLogout}
-      />
+      {onLogout && (
+        <ConfirmDialog
+          open={isLogoutDialogOpen}
+          onOpenChange={setIsLogoutDialogOpen}
+          title="خروج از حساب کاربری"
+          message="آیا برای خروج از سامانه اطمینان دارید؟"
+          confirmText="خروج"
+          cancelText="انصراف"
+          variant="destructive"
+          isLoading={isLoggingOut}
+          onConfirm={handleConfirmLogout}
+        />
+      )}
     </div>
   );
 }
