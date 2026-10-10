@@ -4,7 +4,16 @@ import { PageContainer } from './PageContainer';
 import { PageCard } from './pageCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Download, Filter, Settings, CheckCircle2, AlertTriangle } from 'lucide-react';
+import {
+  Plus,
+  Download,
+  Filter,
+  Settings,
+  CheckCircle2,
+  AlertTriangle,
+  SlidersHorizontal,
+  Layers,
+} from 'lucide-react';
 
 const meta: Meta<typeof PageContainer> = {
   title: 'Layout/PageContainer',
@@ -116,7 +125,67 @@ export const Playground: Story = {
 };
 
 /**
- * ۲. هدر درون کارت (Header Inside Card) - ایده‌آل برای فرم‌ها و پنل‌های تنظیمات
+ * ۲. سفارشی‌سازی هدر با headerProps (Override کردن Variant و Size هدر)
+ */
+export const CustomHeaderProps: Story = {
+  args: {
+    variant: 'default',
+    size: 'default',
+    title: 'مرکز اعلان‌های سیستم',
+    description: 'کارت دارای ظاهر پیش‌فرض است، اما هدر از طریق headerProps دارای واریانت primary و سایز lg است.',
+    headerProps: {
+      variant: 'primary',
+      size: 'lg',
+      bordered: true,
+      extra: (
+        <Button size="sm" className="gap-1.5" iconStart={<SlidersHorizontal />}>
+          <span>پیکربندی اعلان</span>
+        </Button>
+      ),
+    },
+    children: (
+      <div className="space-y-3 p-2">
+        <p className="text-sm text-muted-foreground">
+          این نمونه نشان می‌دهد چگونه بدون شکستن ساختار کلی کانتینر، می‌توان صرفاً به هدر واریانت متفاوتی (مانند <code>primary</code>) داد در حالی که کارت تم اصلی خود را حفظ کرده است.
+        </p>
+        <div className="rounded-md border border-border p-3 text-xs text-muted-foreground">
+          وضعیت: <strong>headerProps.variant = &quot;primary&quot;</strong> | <strong>Container.variant = &quot;default&quot;</strong>
+        </div>
+      </div>
+    ),
+  },
+};
+
+/**
+ * ۳. سفارشی‌سازی کارت با cardProps (Override کردن Variant و تگ سمانتیک کارت)
+ */
+export const CustomCardProps: Story = {
+  args: {
+    title: 'آمار و گزارش‌های مصرفی',
+    description: 'هدر تم استاندارد دارد ولی کارت زیرین از طریق cardProps با واریانت muted و به شکل سمانتیک رندر شده است.',
+    cardProps: {
+      as: 'section',
+      variant: 'muted',
+      className: 'shadow-inner border-dashed',
+    },
+    extra: (
+      <Button variant="secondary" size="sm" className="gap-1.5" iconStart={<Layers />}>
+        <span>مشاهده جزییات</span>
+      </Button>
+    ),
+    children: (
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-foreground">بخش رندر شده با تگ سمانتیک &lt;section&gt;</div>
+        <p className="text-xs text-muted-foreground">
+          استفاده از <code>cardProps</code> اجازه می‌دهد ویژگی‌های اختصاصی کارت مثل <code>as</code>، <code>className</code> و استایل‌های تکمیلی را مستقل از کانتینر تنظیم نمایید.
+        </p>
+      </div>
+    ),
+  },
+};
+
+/**
+ * ۴. هدر درون کارت (Header Inside Card) - ایده‌آل برای فرم‌ها و پنل‌های تنظیمات
  */
 export const HeaderInsideCard: Story = {
   args: {
@@ -148,7 +217,7 @@ export const HeaderInsideCard: Story = {
 };
 
 /**
- * ۳. بدون کارت محتوا (withCard: false) - مناسب داشبورد با گرید چند کارته
+ * ۵. بدون کارت محتوا (withCard: false) - مناسب داشبورد با گرید چند کارته
  */
 export const WithoutCardDashboard: Story = {
   args: {
@@ -191,7 +260,7 @@ export const WithoutCardDashboard: Story = {
 };
 
 /**
- * ۴. مقایسه اندازه‌ها (Size Scales Comparison)
+ * ۶. مقایسه اندازه‌ها (Size Scales Comparison)
  */
 export const SizeComparison: Story = {
   render: () => {
@@ -218,7 +287,7 @@ export const SizeComparison: Story = {
 };
 
 /**
- * ۵. مقایسه تمام واریانت‌های تم استاندارد (Variants Comparison)
+ * ۷. مقایسه تمام واریانت‌های تم استاندارد (Variants Comparison)
  */
 export const VariantsComparison: Story = {
   render: () => {
@@ -250,7 +319,7 @@ export const VariantsComparison: Story = {
 };
 
 /**
- * ۶. حالت بدون هدر (صرفاً بدنه و کانتینر یکپارچه)
+ * ۸. حالت بدون هدر (صرفاً بدنه و کانتینر یکپارچه)
  */
 export const WithoutHeader: Story = {
   args: {
@@ -268,7 +337,7 @@ export const WithoutHeader: Story = {
 };
 
 /**
- * ۷. بخش حساس و هشدار با واریانت Destructive
+ * ۹. بخش حساس و هشدار با واریانت Destructive
  */
 export const DestructiveSection: Story = {
   args: {
