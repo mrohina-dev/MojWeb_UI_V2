@@ -2,23 +2,7 @@ import { cn } from '@/lib/utils';
 import PageTitle from '@/components/ui/title';
 import { useRouteMetadata } from '@/hooks/useRouteMetadata';
 import { pageHeaderVariants } from './PageHeader.variants';
-import type { PageHeaderProps, PageHeaderSize } from './PageHeader.type';
-import type { pageTitleVariants } from '@/components/ui/title/title.variants';
-import type { VariantProps } from 'class-variance-authority';
-
-type TitleSize = NonNullable<VariantProps<typeof pageTitleVariants>['size']>;
-
-function mapHeaderSizeToTitleSize(size?: PageHeaderSize): TitleSize {
-  switch (size) {
-    case 'sm':
-      return 'sm';
-    case 'lg':
-      return 'lg';
-    case 'default':
-    default:
-      return 'md';
-  }
-}
+import type { PageHeaderProps } from './PageHeader.type';
 
 export function PageHeader({
   title,
@@ -40,20 +24,18 @@ export function PageHeader({
     return null;
   }
 
-  const titleSize = mapHeaderSizeToTitleSize(size ?? 'default');
-
   return (
     <header
       className={cn(pageHeaderVariants({ size, variant, bordered }), className)}
       {...props}
     >
-      {/* بخش راست: تایتل، اسلات بج/آیکون و متن توضیحات */}
+      {/* بخش راست: تایتل، نشانگر وضعیت و توضیحات */}
       <div className="min-w-0 flex-1 flex flex-col gap-1.5">
         <div className="flex flex-wrap items-center gap-3">
           {resolvedTitle && (
             <PageTitle
               title={resolvedTitle}
-              size={titleSize}
+              size={size}
               variant={variant}
             />
           )}
@@ -67,7 +49,7 @@ export function PageHeader({
         )}
       </div>
 
-      {/* بخش چپ: اکشن‌ها، فیلترها یا دکمه‌ها */}
+      {/* بخش چپ: اکشن‌ها و ابزارها */}
       {extra && (
         <div className="flex shrink-0 flex-wrap items-center gap-2.5 sm:justify-end">
           {extra}

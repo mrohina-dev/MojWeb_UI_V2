@@ -18,6 +18,7 @@ export type MultiSelectOptions = (MultiSelectOption | MultiSelectOptionGroup)[];
  * سایزهای مجاز برای MultiSelect (به استثنای full که با fullWidth هندل می‌شود)
  */
 export type MultiSelectSize = Exclude<ComponentSize, "full">;
+export type MultiSelectVariant = Exclude<ComponentVariant, "destructive" | "success" | "warning" | "muted">;
 
 export interface SimplifiedMultiSelectProps {
   id?: string;
@@ -30,7 +31,7 @@ export interface SimplifiedMultiSelectProps {
   required?: boolean;
   fullWidth?: boolean;
   size?: MultiSelectSize;
-  variant?: ComponentVariant;
+  variant?: MultiSelectVariant;
   className?: string;
   wrapperClassName?: string;
 

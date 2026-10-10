@@ -8,14 +8,15 @@ export const pageHeaderVariants = cva(
         sm: 'mb-4 gap-3 sm:gap-4',
         default: 'mb-6 gap-4 sm:gap-6',
         lg: 'mb-8 gap-5 sm:gap-8',
+        xl: 'mb-10 gap-6 sm:gap-10',
       },
       variant: {
-        default: '',
+        default: 'text-foreground',
         muted: 'text-muted-foreground',
-        primary: 'text-primary',
         secondary: 'text-secondary-foreground',
+        primary: 'text-primary',
         destructive: 'text-destructive',
-        gradient: '',
+        ghost: 'text-muted-foreground/80',
       },
       bordered: {
         true: 'border-b border-border/60 pb-4 sm:pb-5',

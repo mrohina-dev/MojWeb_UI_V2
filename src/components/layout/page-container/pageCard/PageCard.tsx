@@ -8,10 +8,12 @@ export const PageCard = React.forwardRef<HTMLDivElement, PageCardProps>(
     {
       as: Component = 'div',
       className,
-      variant,
+      size = 'default',
+      variant = 'default',
+      bordered = true,
+      interactive = false,
       padding,
       rounded,
-      interactive,
       children,
       ...props
     },
@@ -21,7 +23,7 @@ export const PageCard = React.forwardRef<HTMLDivElement, PageCardProps>(
       <Component
         ref={ref}
         className={cn(
-          pageCardVariants({ variant, padding, rounded, interactive }),
+          pageCardVariants({ size, variant, bordered, interactive, padding, rounded }),
           className
         )}
         {...props}

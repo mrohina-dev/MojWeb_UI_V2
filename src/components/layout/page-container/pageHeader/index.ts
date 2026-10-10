@@ -4,6 +4,5 @@ export type {
   PageHeaderProps,
   PageHeaderSize,
   PageHeaderVariant,
-  PageHeaderVariantsProps,
   PageHeaderContextType,
 } from './PageHeader.type';

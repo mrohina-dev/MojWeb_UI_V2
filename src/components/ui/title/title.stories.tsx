@@ -25,7 +25,7 @@ const meta: Meta<typeof PageTitle> = {
     },
     size: {
       control: { type: "select" },
-      options: ["sm", "md", "lg", "xl"],
+      options: ["sm", "md", "lg", "xl", "default"],
       description: "سایز عنوان",
     },
     align: {
@@ -41,7 +41,7 @@ const meta: Meta<typeof PageTitle> = {
         "primary",
         "secondary",
         "destructive",
-        "gradient",
+        "ghost",
       ],
       description: "رنگ/تُن بصری عنوان",
     },
@@ -82,10 +82,10 @@ export const Centered: Story = {
   },
 };
 
-export const Gradient: Story = {
+export const Ghost: Story = {
   args: {
     title: "گزارش تحلیلی سالانه",
-    variant: "gradient",
+    variant: "ghost",
     size: "lg",
   },
 };
@@ -106,6 +106,7 @@ export const AllSizes: Story = {
       <PageTitle title="عنوان سایز md" size="md" align="start" />
       <PageTitle title="عنوان سایز lg" size="lg" align="start" />
       <PageTitle title="عنوان سایز xl" size="xl" align="start" />
+      <PageTitle title="عنوان سایز default" size="default" align="start" />
     </div>
   ),
 };

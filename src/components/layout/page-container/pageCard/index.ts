@@ -2,7 +2,6 @@ export { PageCard, default } from './PageCard';
 export { pageCardVariants } from './PageCard.variants';
 export type {
   PageCardProps,
-  PageCardPadding,
+  PageCardSize,
   PageCardVariant,
-  PageCardVariantsProps,
 } from './PageCard.type';

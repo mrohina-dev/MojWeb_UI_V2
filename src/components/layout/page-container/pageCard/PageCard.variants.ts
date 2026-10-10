@@ -4,27 +4,31 @@ export const pageCardVariants = cva(
   'w-full transition-all duration-200 text-card-foreground',
   {
     variants: {
-      /**
-       * سبک بصری کارت کاملاً منطبق بر متغیرهای OKLCH در Tailwind v4
-       */
-      variant: {
-        // کارت استاندارد داشبورد (سفید/روشن با بوردر نرم و سایه خفیف)
-        default: 'border border-border/60 bg-card shadow-xs',
-        // کارت پس‌زمینه مات/خاکستری (مناسب فرم‌ها یا محتوای فرعی)
-        mute: 'border border-border/50 bg-muted/40 shadow-none',
-        // کارت دارای تینت پالت ثانویه
-        secondary: 'border border-secondary-200/50 bg-secondary-50/50 dark:border-secondary-900/50 dark:bg-secondary-950/30 shadow-none',
-        // کارت تخت با بوردر مشخص (بدون سایه)
-        outline: 'border border-border bg-card shadow-none',
-        // کارت شفاف بدون کادر و بک‌گراند
-        ghost: 'border-transparent bg-transparent shadow-none',
-        // بدون استایل سازمانی (برای چیدمان‌های کاملاً کاستوم)
-        plain: 'shadow-none',
+      /** مقیاس کلی کارت (اندازه پیش‌فرض پدینگ و انحنا) */
+      size: {
+        sm: 'p-4 rounded-lg',
+        default: 'p-6 rounded-xl',
+        lg: 'p-8 rounded-2xl',
+        xl: 'p-10 rounded-3xl',
       },
 
-      /**
-       * فاصله‌گذاری داخلی (Padding)
-       */
+      /** سبک و تم بصری منطبق با PageHeader */
+      variant: {
+        default: 'bg-card text-card-foreground shadow-xs',
+        muted: 'bg-muted/40 text-foreground shadow-none',
+        secondary: 'bg-secondary/15 text-secondary-foreground shadow-none',
+        primary: 'bg-primary/5 text-primary shadow-none',
+        destructive: 'bg-destructive/5 text-destructive border-destructive/20 shadow-none',
+        ghost: 'bg-transparent shadow-none',
+      },
+
+      /** خط حاشیه دور کارت مستقل از پس‌زمینه */
+      bordered: {
+        true: 'border border-border/60',
+        false: 'border-0',
+      },
+
+      /** امکان اورراید کردن پدینگ به صورت مستقل */
       padding: {
         none: 'p-0',
         sm: 'p-4',
@@ -33,9 +37,7 @@ export const pageCardVariants = cva(
         xl: 'p-10',
       },
 
-      /**
-       * میزان گردی گوشه‌ها مطابق توکن‌های radius تعریف شده در تم
-       */
+      /** امکان اورراید کردن انحنا به صورت مستقل */
       rounded: {
         none: 'rounded-none',
         sm: 'rounded-md',
@@ -44,18 +46,16 @@ export const pageCardVariants = cva(
         full: 'rounded-3xl',
       },
 
-      /**
-       * آیا کارت قابلیت هاور/تعاملی دارد یا خیر
-       */
+      /** قابلیت حالت تعاملی و هاور */
       interactive: {
         true: 'hover:shadow-md hover:border-border transition-shadow cursor-pointer',
         false: '',
       },
     },
     defaultVariants: {
+      size: 'default',
       variant: 'default',
-      padding: 'default',
-      rounded: 'default',
+      bordered: true,
       interactive: false,
     },
   }

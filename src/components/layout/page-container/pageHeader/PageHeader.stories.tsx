@@ -19,17 +19,26 @@ const meta: Meta<typeof PageHeader> = {
   argTypes: {
     size: {
       control: 'select',
-      options: ['sm', 'default', 'lg'],
+      options: ['sm', 'default', 'lg', 'xl'],
       description: 'اندازه و فاصله‌بندی هدر صفحه',
+      table: {
+        defaultValue: { summary: 'default' },
+      },
     },
     variant: {
       control: 'select',
-      options: ['default', 'muted', 'primary', 'secondary', 'destructive', 'gradient'],
+      options: ['default', 'muted', 'primary', 'secondary', 'destructive'],
       description: 'تُن رنگی و استایل عنوان هدر',
+      table: {
+        defaultValue: { summary: 'default' },
+      },
     },
     bordered: {
       control: 'boolean',
       description: 'افزودن خط جداکننده به پایین هدر',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
     },
     title: {
       control: 'text',
@@ -81,11 +90,6 @@ export const Variants: Story = {
         description="عنوان هدر برای صفحات هشدار، حذف یا بخش‌های حساس"
       />
       <PageHeader
-        title="Gradient Variant"
-        variant="gradient"
-        description="عنوان هدر با گرادیانت مدرن"
-      />
-      <PageHeader
         title="Bordered Example"
         bordered
         description="ترکیب هدر با خط جداکننده زیرین"
@@ -94,13 +98,14 @@ export const Variants: Story = {
   ),
 };
 
-// ۲. نمایش تمام سایزها در کنار هم
+// ۲. نمایش تمام سایزها در کنار هم (شامل سایز جدید xl)
 export const Sizes: Story = {
   render: () => (
     <div className="flex flex-col gap-8">
       <PageHeader title="Small Size" size="sm" description="سایز فشرده" />
       <PageHeader title="Default Size" size="default" description="سایز استاندارد صفحات" />
       <PageHeader title="Large Size" size="lg" description="سایز برجسته داشبوردها" />
+      <PageHeader title="Extra Large Size" size="xl" description="سایز فوق برجسته برای لندینگ‌ها یا داشبوردهای اصلی" />
     </div>
   ),
 };
@@ -113,16 +118,16 @@ export const Playground: Story = {
     size: 'default',
     variant: 'default',
     bordered: true,
-    titleSlot: <Badge variant="success">فعال</Badge>,
+    titleSlot: <Badge variant="secondary">فعال</Badge>,
     extra: (
-      <>
-        <Button variant="ghost" size="sm" iconStart={<Download />}>
-          خروجی
+      <div className="flex items-center gap-2">
+        <Button outline size="sm" iconStart = {<Download/>}>
+          <span>خروجی</span>
         </Button>
-        <Button variant="primary" size="sm" iconStart={<Plus />}>
-          جدید
+        <Button size="sm" iconStart = {<Plus />}>
+          <span>جدید</span>
         </Button>
-      </>
+      </div>
     ),
   },
 };
