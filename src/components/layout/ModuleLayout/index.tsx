@@ -3,9 +3,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import AppShell from '../AppShell';
 import { SidebarProvider } from '../sidebar/SidebarProvider';
 import { Sidebar } from '../sidebar/Sidebar';
-import PageContainer from '../page-container/PageContainer';
-import { PageHeaderProvider } from './PageHeader';
-import { usePageHeader } from './PageHeaderContext';
+import Breadcrumbs from '@/components/ui/breadcrumbs/Breadcrumbs';
 import { useRouteMetadata } from '@/hooks/useRouteMetadata';
 import { userService } from '@/services/api/user.service';
 import {
@@ -34,12 +32,13 @@ function mapNavItems(items: NavigationItem[]): SidebarNavItem[] {
   });
 }
 
-function ModuleLayoutContent({ moduleKey }: ModuleLayoutProps) {
+export function ModuleLayout({
+  moduleKey,
+  showBreadcrumbs = true,
+}: ModuleLayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const { actions, customTitle } = usePageHeader();
-  const { title: autoTitle, breadcrumbs } = useRouteMetadata(moduleKey);
+  const { breadcrumbs } = useRouteMetadata(moduleKey);
 
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
@@ -81,6 +80,9 @@ function ModuleLayoutContent({ moduleKey }: ModuleLayoutProps) {
 
   const HeaderIcon = moduleConfig?.icon;
 
+  // رندر مشروط نوار مسیر: پیش‌فرض فعال است مگر اینکه صریحاً false شود یا مسیری موجود نباشد
+  const shouldRenderBreadcrumbs = showBreadcrumbs && breadcrumbs.length > 0;
+
   return (
     <SidebarProvider>
       <AppShell
@@ -101,25 +103,17 @@ function ModuleLayoutContent({ moduleKey }: ModuleLayoutProps) {
           />
         }
       >
-        <PageContainer
-          title={customTitle ?? autoTitle}
-          breadcrumbsItems={breadcrumbs}
-          actions={actions}
-          contentVariant="card"
-          maxWidth='full'
-        >
+        {/* فریم استاندارد عرض صفحه + Breadcrumbs سراسری */}
+        <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          {shouldRenderBreadcrumbs && (
+            <div className="mb-4">
+              <Breadcrumbs items={breadcrumbs} />
+            </div>
+          )}
           <Outlet />
-        </PageContainer>
+        </div>
       </AppShell>
     </SidebarProvider>
-  );
-}
-
-export function ModuleLayout(props: ModuleLayoutProps) {
-  return (
-    <PageHeaderProvider>
-      <ModuleLayoutContent {...props} />
-    </PageHeaderProvider>
   );
 }
 
