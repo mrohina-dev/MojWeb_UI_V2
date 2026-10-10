@@ -1,100 +1,91 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import PageTitle from '@/components/ui/title';
-import Breadcrumbs from '@/components/ui/breadcrumbs/Breadcrumbs';
+import { PageHeader } from './pageHeader';
+import { PageCard } from './pageCard';
 import type { PageContainerProps } from './PageContainer.type';
-import { pageContainerVariants, pageContentVariants } from './PageContainer.variants';
 
-const PageContainer = React.forwardRef<HTMLDivElement, PageContainerProps>(
+export const PageContainer = React.forwardRef<HTMLDivElement, PageContainerProps>(
   (
     {
-      className,
-      maxWidth,
+      size = 'default',
+      variant = 'default',
+      bordered,
       title,
       description,
-      actions,
-      breadcrumbs,
-      breadcrumbsItems,
-      breadcrumbsSize,
-      breadcrumbsVariant,
-      breadcrumbsSeparatorVariant,
-      breadcrumbsMaxItemsBeforeCollapse,
-      headerSlot,
-      contentVariant = 'card',
-      contentClassName,
-      titleSize = 'md',
-      titleVariant = 'default',
+      titleSlot,
+      extra,
+      moduleKey,
+      header,
+      headerProps,
+      withCard = true,
+      headerInsideCard = false,
+      cardProps,
+      className,
       children,
       ...props
     },
     ref
   ) => {
-    const hasHeader = Boolean(
-      title || description || actions || breadcrumbs || breadcrumbsItems || headerSlot
-    );
+    // بررسی نیاز به رندر هدر
+    const hasHeaderContent =
+      header !== false &&
+      (Boolean(header) ||
+        Boolean(title) ||
+        Boolean(description) ||
+        Boolean(titleSlot) ||
+        Boolean(extra) ||
+        Boolean(moduleKey) ||
+        Boolean(headerProps));
 
-    // اولویت با حالت داده‌محور است؛ در غیر این صورت نود آزاد رندر می‌شود
-    const renderedBreadcrumbs = breadcrumbsItems ? (
-      <Breadcrumbs
-        items={breadcrumbsItems}
-        size={breadcrumbsSize}
-        variant={breadcrumbsVariant}
-        separatorVariant={breadcrumbsSeparatorVariant}
-        maxItemsBeforeCollapse={breadcrumbsMaxItemsBeforeCollapse}
-      />
-    ) : (
-      breadcrumbs
+    // آماده‌سازی هدر استاندارد با ارث‌بری خودکار پراپ‌ها
+    const renderedHeader = hasHeaderContent ? (
+      React.isValidElement(header) ? (
+        header
+      ) : (
+        <PageHeader
+          size={headerProps?.size ?? size}
+          variant={headerProps?.variant ?? variant}
+          bordered={headerProps?.bordered ?? (headerInsideCard ? true : bordered)}
+          title={title}
+          description={description}
+          titleSlot={titleSlot}
+          extra={extra}
+          moduleKey={moduleKey}
+          {...headerProps}
+        />
+      )
+    ) : null;
+
+    // محتوای درونی (بدنه کارت یا بدنه عمومی)
+    const content = (
+      <>
+        {headerInsideCard && renderedHeader}
+        {children}
+      </>
     );
 
     return (
       <div
         ref={ref}
-        className={cn(pageContainerVariants({ maxWidth }), className)}
+        className={cn('w-full flex flex-col transition-colors', className)}
         {...props}
       >
-        {/* مسیر ناوبری (Breadcrumbs) */}
-        {renderedBreadcrumbs && <div className="mb-4">{renderedBreadcrumbs}</div>}
+        {/* رندر هدر خارج از کارت */}
+        {!headerInsideCard && renderedHeader}
 
-        {/* سربرگ صفحه با توزیع بالانس شده و فاصله استاندارد بین عنوان و دکمه‌ها */}
-        {hasHeader && (
-          <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-            {/* بخش عنوان: با min-w معقول تا مانع از شکسته‌شدن تک‌کلمه‌ای متن شود */}
-            {title ? (
-              <div className="min-w-0 flex-1 sm:max-w-2xl lg:max-w-3xl">
-                <PageTitle
-                  title={title}
-                  description={description}
-                  size={titleSize}
-                  variant={titleVariant}
-                />
-              </div>
-            ) : (
-              description && (
-                <div className="flex-1 text-sm text-muted-foreground">{description}</div>
-              )
-            )}
-
-            {/* اسلات میانی اختیاری */}
-            {headerSlot}
-
-            {/* دکمه‌ها و اکشن‌ها: جمع‌وجور، بدون فشردگی نامناسب و تراز شده با لبه ستون */}
-            {actions && (
-              <div className="flex shrink-0 flex-wrap items-center gap-2.5 sm:justify-end">
-                {actions}
-              </div>
-            )}
-          </header>
+        {/* بخش بدنه: داخل PageCard یا به صورت ساده */}
+        {withCard ? (
+          <PageCard
+            size={size}
+            variant={variant}
+            bordered={bordered}
+            {...cardProps}
+          >
+            {content}
+          </PageCard>
+        ) : (
+          <div className="w-full">{content}</div>
         )}
-
-        {/* بدنه محتوای صفحه */}
-        <main
-          className={cn(
-            pageContentVariants({ variant: contentVariant }),
-            contentClassName
-          )}
-        >
-          {children}
-        </main>
       </div>
     );
   }
