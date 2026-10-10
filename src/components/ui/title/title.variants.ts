@@ -9,6 +9,7 @@ export const pageTitleVariants = cva(
         md: "text-xl md:text-2xl",
         lg: "text-2xl md:text-3xl",
         xl: "text-3xl md:text-4xl",
+        default: "text-xl md:text-2xl",
       },
       align: {
         start: "text-start",
@@ -21,7 +22,7 @@ export const pageTitleVariants = cva(
         primary: "text-primary",
         secondary: "text-secondary",
         destructive: "text-destructive",
-        gradient: "bg-gradient-to-br from-primary to-primary/60 bg-clip-text text-transparent",
+        ghost: "bg-gradient-to-br from-primary to-primary/60 bg-clip-text text-transparent",
       },
     },
     defaultVariants: {

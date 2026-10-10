@@ -1,7 +1,7 @@
 import { Bell, LogOut, MessageSquare } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/logo2.svg';
 import { ThemeToggle } from '@/components/common/theme-toggle/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import Badge from '@/components/ui/badge';
@@ -20,6 +20,7 @@ import {
 const Header = ({
   variant = 'default',
   showSidebarToggle = false,
+  hasSidebar = false,
   unreadNotificationsCount = 0,
   unreadMessagesCount = 0,
   className,
@@ -28,20 +29,43 @@ const Header = ({
   onMessagesClick,
   onLogout,
 }: HeaderProps) => {
+  // ۱. اگر showSidebarToggle باشد همه‌جا نشان می‌دهد.
+  // ۲. اگر نباشد ولی hasSidebar باشد، فقط در موبایل (md:hidden) نشان می‌دهد.
+  const renderSidebarToggle = () => {
+    if (showSidebarToggle) {
+      return (
+        <SidebarToggle
+          variant="menu"
+          className={headerActionButtonVariants({ variant })}
+          onClick={onSidebarToggle}
+        />
+      );
+    }
+
+    if (hasSidebar) {
+      return (
+        <div className="md:hidden">
+          <SidebarToggle
+            variant="menu"
+            className={headerActionButtonVariants({ variant })}
+            onClick={onSidebarToggle}
+          />
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <header className={cn(headerVariants({ variant }), className)}>
       {/* برندینگ، لوگو و دکمه تاگل سایدبار */}
       <div className="flex items-center gap-2 md:gap-3">
-        {showSidebarToggle && (
-          <SidebarToggle
-            variant="menu" // در هدر همیشه حس «منو» را می‌دهد
-            className={headerActionButtonVariants({ variant })}
-            onClick={onSidebarToggle}
-          />
-        )}
+        {renderSidebarToggle()}
 
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-white p-1 shadow-xs ring-1 ring-black/5 dark:ring-white/10">
+        <div className={`flex size-7 shrink-0 items-center justify-center rounded-lg shadow-xs ${variant === 'primary' ? "bg-white p-1" : "" }`}>
           <img
+            // src={"/favicon.svg"}
             src={logoImg}
             alt="لوگوی بانک صادرات ایران"
             className="size-full object-contain"

@@ -17,4 +17,5 @@ export interface HeaderProps extends VariantProps<typeof headerVariants> {
   onNotificationsClick?: () => void;
   onMessagesClick?: () => void;
   onLogout?: () => void;
+  hasSidebar?: boolean;
 }

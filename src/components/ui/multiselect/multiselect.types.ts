@@ -1,5 +1,5 @@
-import type { ComponentSize } from "@/types/ui.types";
 import * as React from "react";
+import type { ComponentSize, ComponentVariant } from "@/types/ui.types";
 
 export interface MultiSelectOption {
   value: string;
@@ -14,6 +14,12 @@ export interface MultiSelectOptionGroup {
 
 export type MultiSelectOptions = (MultiSelectOption | MultiSelectOptionGroup)[];
 
+/**
+ * سایزهای مجاز برای MultiSelect (به استثنای full که با fullWidth هندل می‌شود)
+ */
+export type MultiSelectSize = Exclude<ComponentSize, "full">;
+export type MultiSelectVariant = Exclude<ComponentVariant, "destructive" | "success" | "warning" | "muted">;
+
 export interface SimplifiedMultiSelectProps {
   id?: string;
   name?: string;
@@ -24,7 +30,8 @@ export interface SimplifiedMultiSelectProps {
   disabled?: boolean;
   required?: boolean;
   fullWidth?: boolean;
-  size?: ComponentSize;
+  size?: MultiSelectSize;
+  variant?: MultiSelectVariant;
   className?: string;
   wrapperClassName?: string;
 

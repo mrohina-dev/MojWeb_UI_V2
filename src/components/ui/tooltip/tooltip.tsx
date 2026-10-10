@@ -53,6 +53,7 @@ export const TooltipContent = React.forwardRef<
           sideOffset={sideOffset}
           align={align}
           alignOffset={alignOffset}
+          className="z-100"
         >
           <BaseTooltip.Popup
             ref={ref}
@@ -72,6 +73,7 @@ export const TooltipContent = React.forwardRef<
     );
   }
 );
+
 TooltipContent.displayName = 'TooltipContent';
 
 /**
