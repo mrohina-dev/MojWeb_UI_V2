@@ -1,3 +1,6 @@
-export { default as PageContainer } from './PageContainer';
-export * from './PageContainer.type';
-export * from './PageContainer.variants';
+export { PageContainer, default } from './PageContainer';
+export type {
+  PageContainerProps,
+  PageContainerSize,
+  PageContainerVariant,
+} from './PageContainer.type';
