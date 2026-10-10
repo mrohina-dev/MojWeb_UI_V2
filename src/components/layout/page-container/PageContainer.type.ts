@@ -1,43 +1,82 @@
 import type * as React from 'react';
-import type { VariantProps } from 'class-variance-authority';
-import type { pageContainerVariants, pageContentVariants } from './PageContainer.variants';
-import type { pageTitleVariants } from '@/components/ui/title/title.variants';
-import type {
-  BreadcrumbItem,
-  BreadcrumbSize,
-  BreadcrumbLinkVariant,
-  BreadcrumbSeparatorVariant,
-} from '@/components/ui/breadcrumbs/Breadcrumbs.type';
+import type { PageHeaderProps, PageHeaderSize, PageHeaderVariant } from './pageHeader';
+import type { PageCardProps } from './pageCard';
 
-export interface PageContainerProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof pageContainerVariants> {
-  /** عنوان اصلی صفحه */
+export type PageContainerSize = PageHeaderSize;
+export type PageContainerVariant = PageHeaderVariant;
+
+export interface PageContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * مقیاس اندازه کلی (به‌طور خودکار بین هدر و کارت هماهنگ می‌شود)
+   * @default 'default'
+   */
+  size?: PageContainerSize;
+
+  /**
+   * سبک بصری مشترک هدر و کارت
+   * @default 'default'
+   */
+  variant?: PageContainerVariant;
+
+  /**
+   * وضعیت خط حاشیه (در هدر خط زیرین و در کارت کادر پیرامونی)
+   */
+  bordered?: boolean;
+
+  /**
+   * عنوان اختصاصی صفحه
+   */
   title?: string;
-  /** توضیحات زیر عنوان */
+
+  /**
+   * توضیحات یا زیرعنوان صفحه
+   */
   description?: React.ReactNode;
-  /** دکمه‌ها و المان‌های عملیاتی در سمت مقابل عنوان */
-  actions?: React.ReactNode;
-  /** مسیر ناوبری به صورت نود آزاد (اگر breadcrumbsItems ارسال شود، نادیده گرفته می‌شود) */
-  breadcrumbs?: React.ReactNode;
-  /** داده‌های ساخت‌یافته مسیر ناوبری (داده‌محور، رندر خودکار با Breadcrumbs) */
-  breadcrumbsItems?: BreadcrumbItem[];
-  /** اندازه Breadcrumbs */
-  breadcrumbsSize?: BreadcrumbSize;
-  /** تم رنگی لینک‌های Breadcrumbs */
-  breadcrumbsVariant?: BreadcrumbLinkVariant;
-  /** تم رنگی جداکننده Breadcrumbs */
-  breadcrumbsSeparatorVariant?: BreadcrumbSeparatorVariant;
-  /** آستانه فشرده‌سازی مسیرهای طولانی در Breadcrumbs */
-  breadcrumbsMaxItemsBeforeCollapse?: number;
-  /** اسلات اختیاری در سربرگ */
-  headerSlot?: React.ReactNode;
-  /** قالب و ظاهر کانتینر محتوا */
-  contentVariant?: VariantProps<typeof pageContentVariants>['variant'];
-  /** کلاس‌های سفارشی برای بخش محتوا (main) */
-  contentClassName?: string;
-  /** اندازه فونت عنوان (مشتق شده از PageTitle) */
-  titleSize?: VariantProps<typeof pageTitleVariants>['size'];
-  /** استایل و رنگ عنوان (مشتق شده از PageTitle) */
-  titleVariant?: VariantProps<typeof pageTitleVariants>['variant'];
+
+  /**
+   * المان کنار عنوان (مانند Badge یا Status)
+   */
+  titleSlot?: React.ReactNode;
+
+  /**
+   * المان‌های اکشن هدر (دکمه‌ها و ابزارها)
+   */
+  extra?: React.ReactNode;
+
+  /**
+   * کلید ماژول ناوبری برای خواندن خودکار عنوان
+   */
+  moduleKey?: PageHeaderProps['moduleKey'];
+
+  /**
+   * ارسال مستقیم یک کامپوننت سفارشی برای هدر (یا false برای حذف کامل هدر)
+   */
+  header?: React.ReactNode | false;
+
+  /**
+   * تنظیمات اختصاصی هدر در صورت نیاز به اورراید مقادیر سراسری
+   */
+  headerProps?: Partial<PageHeaderProps>;
+
+  /**
+   * آیا محتوا داخل کارت (PageCard) قرار گیرد؟
+   * @default true
+   */
+  withCard?: boolean;
+
+  /**
+   * آیا هدر داخل بدنه کارت قرار گیرد یا بالای آن رندر شود؟
+   * @default false
+   */
+  headerInsideCard?: boolean;
+
+  /**
+   * تنظیمات اختصاصی کارت در صورت نیاز به اورراید مقادیر سراسری
+   */
+  cardProps?: Partial<PageCardProps>;
+
+  /**
+   * محتوای اصلی بدنه صفحه
+   */
+  children?: React.ReactNode;
 }
