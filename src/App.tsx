@@ -1,8 +1,8 @@
 // src/App.tsx
 import { Suspense } from "react";
 import { AppRouter } from "@/routes";
-import { LoadingState } from "@/components/ui/loading-state/loading-state";
-import { Toaster } from "@/components/ui/sonner";
+import { LoadingState } from "@/shared/components/ui/loading-state/loading-state";
+import { Toaster } from "@/shared/components/ui/sonner";
 
 export function App() {
   return (
