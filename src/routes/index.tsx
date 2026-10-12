@@ -2,13 +2,13 @@ import { lazy } from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicRoute } from './PublicRoute';
-import GeneralLayout from '@/components/layout/GeneralLayout';
-import ModuleLayout from '@/components/layout/ModuleLayout';
+import GeneralLayout from '@/shared/components/layout/GeneralLayout';
+import ModuleLayout from '@/shared/components/layout/ModuleLayout';
 
 const HomePage = lazy(() => import('@/pages/home/HomePage'));
 const LoginPage = lazy(() => import('@/pages/login'));
 
-const SvjSendFileListPage = lazy(() => import('@/pages/svj/send-file-list'));
+const SvjSendFileListPage = lazy(() => import('@/pages/svj/sendFileList'));
 const PayaListPage = lazy(() => import('@/pages/paya/list'));
 const SatnaPage = lazy(() => import('@/pages/satna'));
 
