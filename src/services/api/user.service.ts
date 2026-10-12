@@ -7,6 +7,7 @@ import type {
 } from "@/types/user.types";
 import { http } from "./client/http-service";
 import { authStorage } from "./client/auth-storage";
+import { clearSessionCookies } from "./client/axios-client";
 
 export const userService = {
   /**
@@ -24,7 +25,6 @@ export const userService = {
     return data;
   },
 
-
   /**
    * بررسی معتبر بودن توکن فعلی
    * در صورت نامعتبر بودن، توست خطا نمایش داده نمی‌شود تا سایلنت هندل شود.
@@ -40,7 +40,7 @@ export const userService = {
    */
   refreshToken: async (payload: RefreshTokenRequest) => {
     const data = await http.post<RefreshTokenResponse>(
-      "/api/User/refreshToken",
+      "/api/User/RefreshToken",
       payload
     );
     authStorage.setAuthData(data);
@@ -48,7 +48,7 @@ export const userService = {
   },
 
   /**
-   * خروج کاربر و پاک‌سازی کامل نشست
+   * خروج کاربر و پاک‌سازی کامل نشست (حافظه و کوکی‌ها)
    */
   logout: async () => {
     try {
@@ -59,8 +59,9 @@ export const userService = {
     } catch {
       // خطا توسط Toast نمایش داده شده است؛ نیازی به شکستن فرآیند خروج کلاینت نیست
     } finally {
-      // پاک‌سازی حافظه کلاینت تحت هر شرایطی
+      // پاک‌سازی هم توکن‌ها و هم کوکی‌های سشن تحت هر شرایطی
       authStorage.clearAuthData();
+      clearSessionCookies();
     }
   },
 };
