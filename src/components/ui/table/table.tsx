@@ -377,7 +377,7 @@ export function Table<T extends Record<string, unknown>>({
                                                     <button
                                                         type="button"
                                                         onClick={() => handleSort(col.key)}
-                                                        className="flex items-center gap-1 font-semibold text-foreground hover:text-primary transition-colors select-none focus:outline-none"
+                                                        className="flex items-center gap-1 font-semibold text-foreground/60 hover:text-primary transition-colors select-none focus:outline-none"
                                                     >
                                                         <span>{col.header}</span>
                                                         <span className="text-muted-foreground/60 group-hover:text-primary transition-colors">
@@ -393,7 +393,7 @@ export function Table<T extends Record<string, unknown>>({
                                                         </span>
                                                     </button>
                                                 ) : (
-                                                    <span>{col.header}</span>
+                                                    <span className="text-foreground/60">{col.header}</span>
                                                 )}
 
                                                 {isColumnFilterable && (
